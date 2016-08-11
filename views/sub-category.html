@@ -1,0 +1,20 @@
+<div class="row">
+    <input type="text" placeholder="Add a new subcategory" size="59">
+    <button class="btn btn-primary">Add</button>
+</div>
+<div class="row">
+    <ul>
+        <li ng-repeat="subCat in model.subCategories">
+            <div>
+                <a class="subcat-title" href="#">{{subCat.name}}</a>
+                <button class="btn btn-primary float-right">+ Add task</button>
+            </div>
+
+            <ul>
+                <li ng-repeat="task in subCat.tasks">
+                    {{task.title}}
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
