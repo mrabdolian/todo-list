@@ -8,10 +8,13 @@
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/controllers/category.js"></script>
+    <script src="js/controllers/sub-category.js"></script>
+    <script src="js/controllers/task-list.js"></script>
 </head>
-<body ng-app="todoListApp">
-<div class="container">
-    ToDo List App
+<body ng-app="todoListApp" ng-controller="MainCtrl">
+<div class="container-fluid">
+    <div ui-view></div>
 </div>
 </body>
 </html>

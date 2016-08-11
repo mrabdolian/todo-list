@@ -1,3 +1,6 @@
-/**
- * Created by mra on 11/08/2016 AD.
- */
+app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $stateParams) {
+
+    $scope.tasks = $scope.subCategories[$stateParams.subCategoryId].tasks;
+
+
+}]);

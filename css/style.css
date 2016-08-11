@@ -1,0 +1,37 @@
+body {
+    color: #555459;
+    background-color: #F7F7F7;
+}
+
+/*.full {*/
+    /*position: absolute;*/
+    /*height: 100%;*/
+    /*margin: 0;*/
+    /*min-height: 100%;*/
+    /*padding: 0;*/
+/*}*/
+
+/*.full-height {*/
+    /*background-color: red!important;*/
+    /*height: 100%;*/
+    /*float: left;*/
+/*}*/
+
+.sidebar {
+    background-color: #E5E5E5;
+    padding: 20px;
+    height: 100%;
+}
+
+.task-list {
+    padding: 20px;
+    background-color: #EFEFEF;
+}
+
+.subcat-title {
+    font-size: 1.5em;
+}
+
+.float-right {
+    float: right;
+}

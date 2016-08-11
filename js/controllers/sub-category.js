@@ -1,6 +1,18 @@
-app.controller('ListCtrl', ['$scope', '$stateParams', function ($scope, $stateParams) {
+app.controller('SubCategoryCtrl', ['$scope', '$stateParams', '$state', function ($scope, $stateParams, $state) {
 
-    $scope.model = $scope.categories[$stateParams.categoryId];
+    $scope.stateIs = function (state) {
+        return $state.is(state);
+    };
+
+    $scope.addSubCategory = function () {
+        $scope.subCategories.push({
+            name: $scope.newSubCategory
+        });
+
+        $scope.newSubCategory = '';
+    };
+
+    $scope.subCategories = $scope.categories[$stateParams.categoryId].subCategories;
 
 
 }]);

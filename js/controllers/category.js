@@ -1,5 +1,13 @@
 app.controller('CategoryCtrl', ['$scope', function ($scope) {
 
+    $scope.addCategory = function () {
+        $scope.categories.push({
+            name: $scope.newCategory,
+            subCategories: []
+        });
+        $scope.newCategory = '';
+    };
+
     $scope.categories = [
         {
             name: 'category1',
@@ -59,6 +67,36 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                     tasks: [
                         {
                             title: 'C2-task111',
+                            dueDate: '222',
+                            description: 'd...'
+                        },
+                        {
+                            title: 'C2-task222',
+                            dueDate: '333',
+                            description: 'd.......'
+                        }
+                    ]
+                },
+                {
+                    name: 'C2-subCategory3',
+                    tasks: [
+                        {
+                            title: 'C2-taskTitle333',
+                            dueDate: '1234',
+                            description: 'some description...'
+                        },
+                        {
+                            title: 'C2-taskTitle2',
+                            dueDate: '1235',
+                            description: 'some description.......'
+                        }
+                    ]
+                },
+                {
+                    name: 'C2-subCategory4',
+                    tasks: [
+                        {
+                            title: 'C2-task444',
                             dueDate: '222',
                             description: 'd...'
                         },
