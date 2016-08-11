@@ -1,0 +1,33 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "A simple todo list app based on angular.js",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrabdolian/todo-list.git"
+  },
+  "keywords": [
+    "todo",
+    "list",
+    "angular",
+    "js",
+    "html",
+    "css",
+    "responsive"
+  ],
+  "author": "mrabdolian <mr.abdolian@gmail.com>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mrabdolian/todo-list/issues"
+  },
+  "homepage": "https://github.com/mrabdolian/todo-list#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-webserver": "^0.9.1"
+  }
+}
