@@ -4,16 +4,15 @@ app.controller('SubCategoryCtrl', ['$scope', '$stateParams', '$state', function 
         return $state.is(state);
     };
 
+    $scope.subCategories = $scope.categories[$stateParams.categoryId].subCategories;
+
     $scope.addSubCategory = function () {
-        console.log("Data: " + $scope.newSubCategory);
         $scope.subCategories.push({
-            name: $scope.newSubCategory
+            name: $scope.newSubCategory,
+            tasks: []
         });
 
         $scope.newSubCategory = '';
     };
-
-    $scope.subCategories = $scope.categories[$stateParams.categoryId].subCategories;
-
 
 }]);
