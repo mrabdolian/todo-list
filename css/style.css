@@ -4,17 +4,17 @@ body {
 }
 
 /*.full {*/
-    /*position: absolute;*/
-    /*height: 100%;*/
-    /*margin: 0;*/
-    /*min-height: 100%;*/
-    /*padding: 0;*/
+/*position: absolute;*/
+/*height: 100%;*/
+/*margin: 0;*/
+/*min-height: 100%;*/
+/*padding: 0;*/
 /*}*/
 
 /*.full-height {*/
-    /*background-color: red!important;*/
-    /*height: 100%;*/
-    /*float: left;*/
+/*background-color: red!important;*/
+/*height: 100%;*/
+/*float: left;*/
 /*}*/
 
 .sidebar {
@@ -34,4 +34,54 @@ body {
 
 .float-right {
     float: right;
+}
+
+.gray {
+    color: gray;
+}
+
+.seperator {
+    border-left: solid #EAEAEA 1px;
+}
+
+.task-row-header {
+    background-color: #F6F6F6;
+}
+
+.task-row {
+    /*margin-top: 3px;*/
+}
+
+.task-row > div {
+    height: 40px;
+}
+
+.task-row > div, .task-row label, .task-row input {
+    font-weight: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.done {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.important {
+    margin-bottom: 0;
+    border: solid 1px gold;
+    box-shadow: gold 0 0 3px;
+    z-index: 999;
+}
+
+.text-gold {
+    color: gold;
+}
+
+.done label {
+    text-decoration: line-through;
+}
+
+.inline {
+    display: inline;
 }

@@ -1,5 +1,51 @@
-<ul>
-    <li ng-repeat="task in tasks">
-        {{task.title}}
+<form name="addTaskForm" ng-submit="addTask()">
+    <input class="" ng-model="newTask.title" type="text" placeholder="+ New Task" size="28">
+    <div class="inline" ng-if="newTask.title">
+        <input class="" ng-model="newTask.dueDate" type="datetime" placeholder="Due Date">
+        <div class="checkbox inline">
+            <label>
+                <input type="checkbox" ng-model="newTask.important">Important?
+            </label>
+        </div>
+        <input class="" ng-model="newTask.description" type="text" placeholder="Task Description..." size="50">
+        <button class="btn btn-default btn-sm" type="submit">+</button>
+    </div>
+</form>
+<br>
+<ul class="list-group">
+    <li class="list-group-item row task-row-header">
+        <div class="col-sm-1 col-lg-1">
+            <span class="glyphicon glyphicon-move"></span>
+        </div>
+        <div class="col-sm-4 col-lg-5 seperator"><label>Title</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>Due Date</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>Done Date</label></div>
+        <div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>
+    </li>
+    <li class="list-group-item row task-row" ng-class="{'done': task.done, 'important': task.important && !task.done}" ng-repeat="task in tasks">
+        <div class="col-sm-1 col-lg-1">
+            <button aria-label="Edit" class="btn btn-default" type="button">
+                <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
+            </button>
+        </div>
+        <div class="col-sm-4 col-lg-5">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="task.done">
+                    <span class="glyphicon glyphicon-star text-gold" ng-show="task.important"></span>
+                    {{task.title}}
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.dueDate}}</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.doneDate}}</label></div>
+        <div class="col-sm-3 col-lg-2 seperator">
+            <button aria-label="Edit" class="btn btn-default" type="button">
+                <span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>
+            </button>
+            <button aria-label="Delete" class="btn btn-default" type="button">
+                <span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>
+            </button>
+        </div>
     </li>
 </ul>

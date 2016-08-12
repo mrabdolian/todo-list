@@ -16,14 +16,16 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                     name: 'subCategory1',
                     tasks: [
                         {
-                            title: 'taskTitle',
+                            title: 'taskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitle',
                             dueDate: '1234',
-                            description: 'some description...'
+                            done: true,
+                            doneDate: '1395/05/22 22:50 PM'
                         },
                         {
                             title: 'taskTitle2',
                             dueDate: '1235',
-                            description: 'some description.......'
+                            done: false,
+                            doneDate: '1395/05/22'
                         }
                     ]
                 },
@@ -33,12 +35,14 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                         {
                             title: 'task111',
                             dueDate: '222',
-                            description: 'd...'
+                            done: false,
+                            doneDate: '1395/05/22'
                         },
                         {
                             title: 'task222',
                             dueDate: '333',
-                            description: 'd.......'
+                            done: true,
+                            doneDate: '1395/05/22'
                         }
                     ]
                 }
@@ -53,12 +57,14 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                         {
                             title: 'C2-taskTitle',
                             dueDate: '1234',
-                            description: 'some description...'
+                            done: false,
+                            doneDate: '1395/05/22'
                         },
                         {
                             title: 'C2-taskTitle2',
                             dueDate: '1235',
-                            description: 'some description.......'
+                            done: false,
+                            doneDate: '1395/05/22'
                         }
                     ]
                 },
@@ -68,12 +74,14 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                         {
                             title: 'C2-task111',
                             dueDate: '222',
-                            description: 'd...'
+                            done: false,
+                            doneDate: '1395/05/22'
                         },
                         {
                             title: 'C2-task222',
                             dueDate: '333',
-                            description: 'd.......'
+                            done: true,
+                            doneDate: '1395/05/22'
                         }
                     ]
                 },
@@ -83,12 +91,14 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                         {
                             title: 'C2-taskTitle333',
                             dueDate: '1234',
-                            description: 'some description...'
+                            done: true,
+                            doneDate: '1395/05/22'
                         },
                         {
                             title: 'C2-taskTitle2',
                             dueDate: '1235',
-                            description: 'some description.......'
+                            done: false,
+                            doneDate: '1395/05/22'
                         }
                     ]
                 },
@@ -98,12 +108,14 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
                         {
                             title: 'C2-task444',
                             dueDate: '222',
-                            description: 'd...'
+                            done: true,
+                            doneDate: '1395/05/22'
                         },
                         {
                             title: 'C2-task222',
                             dueDate: '333',
-                            description: 'd.......'
+                            done: false,
+                            doneDate: '1395/05/22'
                         }
                     ]
                 }
