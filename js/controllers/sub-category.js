@@ -5,6 +5,7 @@ app.controller('SubCategoryCtrl', ['$scope', '$stateParams', '$state', function 
     };
 
     $scope.addSubCategory = function () {
+        console.log("Data: " + $scope.newSubCategory);
         $scope.subCategories.push({
             name: $scope.newSubCategory
         });

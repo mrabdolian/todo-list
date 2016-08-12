@@ -1,5 +1,4 @@
-<div ng-if="stateIs('category.categoryId.subCategoryId')" ui-view></div>
-<div ng-if="stateIs('category.categoryId')">
+<div ng-show="stateIs('category.categoryId')">
     <form name="addSubCategoryForm" ng-submit="addSubCategory()">
         <input class="" ng-model="newSubCategory" type="text" placeholder="+ New SubCategory" size="50">
         <button class="btn btn-default btn-sm" ng-if="newSubCategory" type="submit">+</button>
@@ -15,3 +14,4 @@
         </ul>
     </div>
 </div>
+<div ui-view></div>

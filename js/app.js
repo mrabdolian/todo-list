@@ -21,7 +21,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
         })
 
         .state('category.categoryId.subCategoryId', {
-            url: '/:subCategoryId',
+            url: '/sub/:subCategoryId',
             templateUrl: 'views/task-list.html',
             controller: 'TaskListCtrl'
         })

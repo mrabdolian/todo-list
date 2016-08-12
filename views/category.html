@@ -8,10 +8,16 @@
         </form>
         <ul>
             <li ng-repeat="category in categories">
-                <h4><a ng-href="#/category/{{categories.indexOf(category)}}">{{category.name}}</a></h4>
+                <h4>
+                    <a ui-sref="category.categoryId({categoryId: categories.indexOf(category)})">
+                        {{category.name}}
+                    </a>
+                </h4>
                 <ul>
                     <li ng-repeat="subCat in category.subCategories">
-                        <a ng-href="#/category/{{categories.indexOf(category)}}/{{category.subCategories.indexOf(subCat)}}">{{subCat.name}}</a>
+                        <a ng-href="#/category/{{categories.indexOf(category)}}/sub/{{category.subCategories.indexOf(subCat)}}">
+                            {{subCat.name}}
+                        </a>
                     </li>
                 </ul>
             </li>
