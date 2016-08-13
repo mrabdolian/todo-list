@@ -37,7 +37,7 @@ body {
 }
 
 .gray {
-    color: gray;
+    color: #AAA;
 }
 
 .seperator {
@@ -56,7 +56,12 @@ body {
     height: 40px;
 }
 
-.task-row > div, .task-row label, .task-row input {
+.task-row > div:first-child {
+    padding-left: 5px;
+    padding-top: 2px;
+}
+
+.task-row > div, .task-row label, .task-row input, .task-row span {
     font-weight: normal;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -69,13 +74,20 @@ body {
 
 .important {
     margin-bottom: 0;
-    border: solid 1px gold;
-    box-shadow: gold 0 0 3px;
+    /*border: dashed 1px gold;*/
+    /*box-shadow: gold 0 0 3px;*/
     z-index: 999;
 }
 
-.text-gold {
+.star-task {
     color: gold;
+    position: absolute;
+    top: 13px;
+    left: 32px;
+}
+
+.star-task-title {
+    margin-left: 14px;
 }
 
 .done label {
@@ -84,4 +96,22 @@ body {
 
 .inline {
     display: inline;
+}
+
+.empty-task-text {
+    color: lightgray;
+    line-height: 1.6;
+    margin-top: 0;
+}
+
+.cursor-move {
+    cursor: move;
+}
+
+.unborder, .unborder:focus, .unborder:active {
+    border: none;
+}
+
+.unborder:focus, .unborder:active {
+    background-color: #e6e6e6;
 }

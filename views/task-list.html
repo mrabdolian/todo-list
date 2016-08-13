@@ -1,15 +1,50 @@
-<form name="addTaskForm" ng-submit="addTask()">
-    <input class="" ng-model="newTask.title" type="text" placeholder="+ New Task" size="28">
-    <div class="inline" ng-if="newTask.title">
-        <input class="" ng-model="newTask.dueDate" type="datetime" placeholder="Due Date">
-        <div class="checkbox inline">
-            <label>
-                <input type="checkbox" ng-model="newTask.important">Important?
-            </label>
+<form id="addTaskForm" name="addTaskForm" ng-submit="submitTask()">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle" ng-model="newTask.title" type="text" placeholder="+ New Task">
+            </div>
         </div>
-        <input class="" ng-model="newTask.description" type="text" placeholder="Task Description..." size="50">
-        <button class="btn btn-default btn-sm" type="submit">+</button>
+        <div class="col-sm-4" ng-show="newTask.title">
+            <div class="form-group">
+                <input class="form-control form-inline" ng-model="newTask.dueDate" type="datetime" placeholder="Due Date">
+            </div>
+        </div>
+        <div class="col-sm-2" ng-show="newTask.title">
+            <div class="form-group inline">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="newTask.important">Important?
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="row" ng-show="newTask.title || editing.key">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <input class="form-control" ng-model="newTask.description" type="text" placeholder="Task Description...">
+            </div>
+        </div>
+        <div class="col-sm-2" ng-hide="editing.key">
+            <div class="form-group">
+                <button class="btn btn-primary" ng-disabled="!newTask.title" type="submit">
+                    &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-2" ng-show="editing.key">
+            <div class="form-group">
+                <button class="btn btn-danger" type="button" ng-click="taskEditCancel()">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button class="btn btn-success" ng-disabled="!newTask.title" type="submit">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="text-danger" ng-show="editing.error">The item you're trying to remove is under editing. Please Cancel or Save the changes and try again.</div>
 </form>
 <br>
 <ul class="list-group">
@@ -22,28 +57,39 @@
         <div class="col-sm-2 col-lg-2 seperator"><label>Done Date</label></div>
         <div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>
     </li>
-    <li class="list-group-item row task-row" ng-class="{'done': task.done, 'important': task.important && !task.done}" ng-repeat="task in tasks">
+    <li class="list-group-item row" ng-hide="tasks[0]">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h3 class="text-center empty-task-text">
+                Nothing here!<br>Why don't add a new task?<br>
+                <button class="btn btn-primary" type="button" ng-click="focusOnNewTask()">Add new task</button>
+            </h3>
+        </div>
+    </li>
+    <li class="list-group-item row task-row" ng-class="{'done': task.done, 'important': task.important && !task.done}"
+        ng-repeat="(key, task) in tasks">
         <div class="col-sm-1 col-lg-1">
-            <button aria-label="Edit" class="btn btn-default" type="button">
+            <button aria-label="Reorder" class="btn btn-default cursor-move unborder" type="button">
                 <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
             </button>
         </div>
         <div class="col-sm-4 col-lg-5">
+            <span class="glyphicon glyphicon-star star-task" ng-show="task.important"></span>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" ng-model="task.done">
-                    <span class="glyphicon glyphicon-star text-gold" ng-show="task.important"></span>
-                    {{task.title}}
+                    <span ng-class="{'star-task-title': task.important}">{{task.title}}</span>
                 </label>
             </div>
         </div>
         <div class="col-sm-2 col-lg-2 seperator"><label>{{task.dueDate}}</label></div>
         <div class="col-sm-2 col-lg-2 seperator"><label>{{task.doneDate}}</label></div>
         <div class="col-sm-3 col-lg-2 seperator">
-            <button aria-label="Edit" class="btn btn-default" type="button">
+            <button aria-label="Edit" class="btn btn-default" type="button" ng-click="editTask(key)"
+                    ng-disabled="task.done">
                 <span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>
             </button>
-            <button aria-label="Delete" class="btn btn-default" type="button">
+            <button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeTask(key)"
+                    ng-disabled="task.done">
                 <span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>
             </button>
         </div>
