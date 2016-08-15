@@ -1,5 +1,5 @@
 <div ng-show="stateIs('category.categoryId')">
-    <form name="addSubCategoryForm" ng-submit="addSubCategory()">
+    <form name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
         <input class="" ng-model="newSubCategory" type="text" placeholder="+ New SubCategory" size="50">
         <button class="btn btn-default btn-sm" ng-show="newSubCategory" ng-disabled="!newSubCategory" type="submit">+</button>
     </form>

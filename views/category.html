@@ -2,7 +2,7 @@
     <div class="col-sm-3 sidebar">
 
         <h3>Categories</h3><br>
-        <form name="addCategoryForm" ng-submit="addCategory()">
+        <form name="addCategoryForm" ng-submit="addCategory()" novalidate>
             <input class="" ng-model="newCategory" type="text" placeholder="+ New Category">
             <button class="btn btn-default btn-sm" ng-show="newCategory" ng-disabled="!newCategory" type="submit">+</button>
         </form>

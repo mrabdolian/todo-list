@@ -1,13 +1,18 @@
-<form id="addTaskForm" name="addTaskForm" ng-submit="submitTask()">
+<form name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="form-group">
                 <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle" ng-model="newTask.title" type="text" placeholder="+ New Task">
             </div>
         </div>
-        <div class="col-sm-4" ng-show="newTask.title">
+        <div class="col-sm-3" ng-show="newTask.title">
             <div class="form-group">
-                <input class="form-control form-inline" ng-model="newTask.dueDate" type="datetime" placeholder="Due Date">
+                <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime" placeholder="Due Date (yyyy-MM-dd)" ng-change="validateDate()">
+            </div>
+        </div>
+        <div class="col-sm-3" ng-show="newTask.title">
+            <div class="form-group">
+                <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime" placeholder="Due Time (hh:mm)" ng-change="validateTime()" ng-disabled="!newTask.dueDate">
             </div>
         </div>
         <div class="col-sm-2" ng-show="newTask.title">
@@ -28,7 +33,7 @@
         </div>
         <div class="col-sm-2" ng-hide="editing.key">
             <div class="form-group">
-                <button class="btn btn-primary" ng-disabled="!newTask.title" type="submit">
+                <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError" type="submit">
                     &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
                 </button>
             </div>
@@ -45,6 +50,8 @@
         </div>
     </div>
     <div class="text-danger" ng-show="editing.error">The item you're trying to remove is under editing. Please Cancel or Save the changes and try again.</div>
+    <div class="text-danger" ng-show="dueDateError">Due Date is not in valid format. Please use 'yyyy-MM-dd'</div>
+    <div class="text-danger" ng-show="dueTimeError">Due Time is not in valid format. Please use 'hh:mm'</div>
 </form>
 <br>
 <ul class="list-group">
@@ -76,13 +83,13 @@
             <span class="glyphicon glyphicon-star star-task" ng-show="task.important"></span>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" ng-model="task.done">
+                    <input type="checkbox" ng-model="task.done" ng-change="taskDone(task)">
                     <span ng-class="{'star-task-title': task.important}">{{task.title}}</span>
                 </label>
             </div>
         </div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.dueDate}}</label></div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.doneDate}}</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.dueDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.doneDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
         <div class="col-sm-3 col-lg-2 seperator">
             <button aria-label="Edit" class="btn btn-default" type="button" ng-click="editTask(key)"
                     ng-disabled="task.done">
