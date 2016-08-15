@@ -76,7 +76,7 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
     };
 
     $scope.taskDone = function (task) {
-        task.doneDate = task.done ? new Date() : '--'; // TODO: fix this, convert to a filter (if null, return '--')
+        task.doneDate = task.done ? new Date() : null; // TODO: fix this, convert to a filter (if null, return '--')
     };
 
     $scope.validateDate = function (date) {
@@ -95,12 +95,10 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
             $scope.newTask.dueDate = dt;
             $scope.dueDateError = false;
             return true;
-            // console.log("Date is valid: " + dt);
         }
         else {
             $scope.dueDateError = true;
             return false;
-            // console.log("Date is NOT valid.");
         }
     };
 
@@ -114,18 +112,16 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
         }
         var parts = time.match(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/);
         if (parts) {
-            var h = parseInt(parts[1]);
-            var m = parseInt(parts[2]);
-            $scope.newTask.dueDate.setHours(h);
-            $scope.newTask.dueDate.setMinutes(m);
+            var hours = parseInt(parts[1]);
+            var minutes = parseInt(parts[2]);
+            $scope.newTask.dueDate.setHours(hours);
+            $scope.newTask.dueDate.setMinutes(minutes);
             $scope.dueTimeError = false;
             return true;
-            // console.log("Date is valid: " + dt);
         }
         else {
             $scope.dueTimeError = true;
             return false;
-            // console.log("Date is NOT valid.");
         }
     };
 
