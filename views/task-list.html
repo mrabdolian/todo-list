@@ -2,17 +2,20 @@
     <div class="row">
         <div class="col-sm-4">
             <div class="form-group">
-                <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle" ng-model="newTask.title" type="text" placeholder="+ New Task">
+                <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle" ng-model="newTask.title"
+                       type="text" placeholder="+ New Task">
             </div>
         </div>
         <div class="col-sm-3" ng-show="newTask.title">
             <div class="form-group">
-                <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime" placeholder="Due Date (yyyy-MM-dd)" ng-change="validateDate()">
+                <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime"
+                       placeholder="Due Date {{dateFormat}}" ng-change="validateDate()">
             </div>
         </div>
         <div class="col-sm-3" ng-show="newTask.title">
             <div class="form-group">
-                <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime" placeholder="Due Time (hh:mm)" ng-change="validateTime()" ng-disabled="!newTask.dueDate">
+                <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime"
+                       placeholder="Due Time ({{timeFormat}})" ng-change="validateTime()" ng-disabled="!newTask.dueDate">
             </div>
         </div>
         <div class="col-sm-2" ng-show="newTask.title">
@@ -28,12 +31,14 @@
     <div class="row" ng-show="newTask.title || editing.key">
         <div class="col-sm-10">
             <div class="form-group">
-                <input class="form-control" ng-model="newTask.description" type="text" placeholder="Task Description...">
+                <input class="form-control" ng-model="newTask.description" type="text"
+                       placeholder="Task Description...">
             </div>
         </div>
         <div class="col-sm-2" ng-hide="editing.key">
             <div class="form-group">
-                <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError" type="submit">
+                <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError && dueTimeError"
+                        type="submit">
                     &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
                 </button>
             </div>
@@ -43,15 +48,18 @@
                 <button class="btn btn-danger" type="button" ng-click="taskEditCancel()">
                     <span class="glyphicon glyphicon-remove"></span>
                 </button>
-                <button class="btn btn-success" ng-disabled="!newTask.title" type="submit">
+                <button class="btn btn-success" ng-disabled="!newTask.title && dueDateError && dueTimeError"
+                        type="submit">
                     <span class="glyphicon glyphicon-ok"></span>
                 </button>
             </div>
         </div>
     </div>
-    <div class="text-danger" ng-show="editing.error">The item you're trying to remove is under editing. Please Cancel or Save the changes and try again.</div>
-    <div class="text-danger" ng-show="dueDateError">Due Date is not in valid format. Please use 'yyyy-MM-dd'</div>
-    <div class="text-danger" ng-show="dueTimeError">Due Time is not in valid format. Please use 'hh:mm'</div>
+    <div class="text-danger" ng-show="editing.error">The item you're trying to remove is under editing. Please Cancel or
+        Save the changes and try again.
+    </div>
+    <div class="text-danger" ng-show="dueDateError">Due Date is not in valid format. Please use '{{dateFormat}}'</div>
+    <div class="text-danger" ng-show="dueTimeError">Due Time is not in valid format. Please use '{{timeFormat}}'</div>
 </form>
 <br>
 <ul class="list-group">
@@ -74,8 +82,14 @@
     </li>
     <li class="list-group-item row task-row" ng-class="{'done': task.done, 'important': task.important && !task.done}"
         ng-repeat="(key, task) in tasks">
+        <div class="bar-group" ng-hide="task.done">
+            <div class="bar bar-gold" ng-show="task.important"></div>
+            <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
+            <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
+        </div>
+
         <div class="col-sm-1 col-lg-1">
-            <button aria-label="Reorder" class="btn btn-default cursor-move unborder" type="button">
+            <button aria-label="Reorder" class="btn btn-default cursor-move reorder-handle" type="button">
                 <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
             </button>
         </div>

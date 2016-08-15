@@ -56,11 +56,6 @@ body {
     height: 40px;
 }
 
-.task-row > div:first-child {
-    padding-left: 5px;
-    padding-top: 2px;
-}
-
 .task-row > div, .task-row label, .task-row input, .task-row span {
     font-weight: normal;
     text-overflow: ellipsis;
@@ -108,10 +103,43 @@ body {
     cursor: move;
 }
 
-.unborder, .unborder:focus, .unborder:active {
+.reorder-handle {
+    margin-left: -5px;
+    margin-top: 4px;
+}
+
+.reorder-handle, .reorder-handle:focus, .reorder-handle:active {
     border: none;
 }
 
-.unborder:focus, .unborder:active {
+.reorder-handle:focus, .reorder-handle:active {
     background-color: #e6e6e6;
+}
+
+.bar-group {
+    position: absolute;
+    width: 10px;
+    height: 60px !important;
+    padding: 0;
+    margin: -10px -15px -10px -15px;
+}
+
+.bar {
+    position: absolute;
+    width: 10px;
+    height: 60px;
+    padding: 0;
+    margin: 0;
+}
+
+.bar-red {
+    background-color: red;
+}
+
+.bar-orange {
+    background-color: orange;
+}
+
+.bar-gold {
+    background-color: gold;
 }

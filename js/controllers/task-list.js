@@ -1,7 +1,11 @@
-app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $stateParams) {
+app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($scope, $stateParams, $filter) {
 
     $scope.dueDateError = false;
     $scope.dueTimeError = false;
+
+    // Date Format: if seperator changed, don't forget to change that in regEx string in validateDate() function too.
+    $scope.dateFormat = 'yyyy-MM-dd';
+    $scope.timeFormat = 'HH:mm';
 
     $scope.tasks = $scope.subCategories[$stateParams.subCategoryId].tasks;
 
@@ -11,6 +15,8 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
             bkpTask: {},
             error: false
         };
+        $scope.newTaskDueDate = null;
+        $scope.newTaskDueTime = null;
     };
 
     $scope.emptyEditing();
@@ -35,11 +41,11 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
     };
 
     $scope.submitTask = function () {
-        if ($scope.editing.key !== null) {  // if editing an item...
-            $scope.emptyEditing();
-            $scope.newTask = {};
-        } else {    // if adding a new item...
-            if (!$scope.dueDateError) {
+        if (!$scope.dueDateError && !$scope.dueTimeError) {
+            if ($scope.editing.key !== null) {  // if editing an item...
+                $scope.emptyEditing();
+                $scope.newTask = {};
+            } else {    // if adding a new item...
                 $scope.tasks.push($scope.newTask);
                 $scope.emptyNewTask();
                 $scope.focusOnNewTask();
@@ -48,15 +54,18 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
     };
 
     $scope.editTask = function (key) {
+        var task = $scope.tasks[key];
         if ($scope.editing.key !== null) {  // if editing an item...
             $scope.taskEditCancel();
         }
         $scope.editing = {
             key: angular.copy(key),
-            bkpTask: angular.copy($scope.tasks[key]),
+            bkpTask: angular.copy(task),
             error: false
         };
-        $scope.newTask = $scope.tasks[key];
+        $scope.newTaskDueDate = $filter('date')(task.dueDate, $scope.dateFormat);
+        $scope.newTaskDueTime = $filter('date')(task.dueDate, $scope.timeFormat);
+        $scope.newTask = task;
         $scope.focusOnNewTask();
     };
 
@@ -64,6 +73,8 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
         $scope.tasks[$scope.editing.key] = $scope.editing.bkpTask;
         $scope.emptyEditing();
         $scope.newTask = {};
+        $scope.dueDateError = false;
+        $scope.dueTimeError = false;
     };
 
     $scope.removeTask = function (key) {
@@ -80,19 +91,18 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
     };
 
     $scope.validateDate = function (date) {
-        if(!date) {
+        if (!date) {
             date = $scope.newTaskDueDate;
         }
-        if(date === '') {
+        if (date === '') {
             $scope.dueDateError = false;
             return true;
         }
         var parts = date.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
         if (parts) {
-            var dt = new Date(parseInt(parts[1], 10),
+            $scope.newTask.dueDate = new Date(parseInt(parts[1], 10),
                 parseInt(parts[2], 10) - 1,
                 parseInt(parts[3], 10));
-            $scope.newTask.dueDate = dt;
             $scope.dueDateError = false;
             return true;
         }
@@ -103,10 +113,10 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
     };
 
     $scope.validateTime = function (time) {
-        if(!time) {
+        if (!time) {
             time = $scope.newTaskDueTime;
         }
-        if(time === '') {
+        if (time === '') {
             $scope.dueTimeError = false;
             return true;
         }
@@ -123,6 +133,19 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', function ($scope, $sta
             $scope.dueTimeError = true;
             return false;
         }
+    };
+
+    $scope.deadlinePassed = function (task) {
+        if (!task.dueDate) { // if dueDate is not set, deadline would never be passed
+            return false;
+        }
+        return task.dueDate < (new Date());
+    };
+
+    $scope.deadlineClose = function (task) {
+        var now = new Date();
+        var diff = task.dueDate - now;
+        return (diff < 8.64e+7 && diff >= 0); // 24 hours in milliseconds: 8.64e+7
     };
 
 }]);
