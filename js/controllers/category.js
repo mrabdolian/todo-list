@@ -10,116 +10,61 @@ app.controller('CategoryCtrl', ['$scope', function ($scope) {
 
     $scope.categories = [
         {
-            name: 'category1',
+            name: 'Personal',
+            hasSubCat: true,
             subCategories: [
                 {
-                    name: 'subCategory1',
+                    name: '2016',
                     tasks: [
                         {
-                            title: 'taskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitletaskTitle',
-                            dueDate: '1234',
-                            done: true,
-                            doneDate: '1395/05/22 22:50 PM'
+                            "title": "Buy Milk",
+                            "description": "Buy milk at 6 O'clock.",
+                            "important": false,
+                            "dueDate": "2016-08-18T01:30:00.000Z",
+                            "done": false,
+                            "doneDate": null
                         },
                         {
-                            title: 'taskTitle2',
-                            dueDate: '1235',
-                            done: false,
-                            doneDate: '1395/05/22'
+                            "title": "Read Book",
+                            "description": "Start reading a new roman.",
+                            "important": false,
+                            "dueDate": "2016-08-19T13:00:00.000Z",
+                            "done": false,
+                            "doneDate": null
+                        },
+                        {
+                            "title": "Go to University",
+                            "description": "Go to class 512.",
+                            "important": true,
+                            "dueDate": "2016-08-19T02:00:00.000Z",
+                            "done": false,
+                            "doneDate": null
+                        },
+                        {
+                            "title": "Learn Angular 2",
+                            "description": "Start learning the new version of Angular!",
+                            "important": false,
+                            "dueDate": "2016-11-30T20:30:00.000Z",
+                            "done": false,
+                            "doneDate": null
+                        },
+                        {
+                            "title": "Study for exam",
+                            "description": "Study for physics exam.",
+                            "important": true,
+                            "dueDate": "2016-08-14T15:30:00.000Z",
+                            "done": false,
+                            "doneDate": null
                         }
                     ]
                 },
                 {
-                    name: 'subCategory2',
-                    tasks: [
-                        {
-                            title: 'task111',
-                            dueDate: '222',
-                            done: false,
-                            doneDate: '1395/05/22'
-                        },
-                        {
-                            title: 'task222',
-                            dueDate: '333',
-                            done: true,
-                            doneDate: '1395/05/22'
-                        }
-                    ]
+                    name: '2017'
                 }
             ]
         },
         {
-            name: 'category2',
-            subCategories: [
-                {
-                    name: 'C2-subCategory1',
-                    tasks: [
-                        {
-                            title: 'C2-taskTitle',
-                            dueDate: '1234',
-                            done: false,
-                            doneDate: '1395/05/22'
-                        },
-                        {
-                            title: 'C2-taskTitle2',
-                            dueDate: '1235',
-                            done: false,
-                            doneDate: '1395/05/22'
-                        }
-                    ]
-                },
-                {
-                    name: 'C2-subCategory2',
-                    tasks: [
-                        {
-                            title: 'C2-task111',
-                            dueDate: '222',
-                            done: false,
-                            doneDate: '1395/05/22'
-                        },
-                        {
-                            title: 'C2-task222',
-                            dueDate: '333',
-                            done: true,
-                            doneDate: '1395/05/22'
-                        }
-                    ]
-                },
-                {
-                    name: 'C2-subCategory3',
-                    tasks: [
-                        {
-                            title: 'C2-taskTitle333',
-                            dueDate: '1234',
-                            done: true,
-                            doneDate: '1395/05/22'
-                        },
-                        {
-                            title: 'C2-taskTitle2',
-                            dueDate: '1235',
-                            done: false,
-                            doneDate: '1395/05/22'
-                        }
-                    ]
-                },
-                {
-                    name: 'C2-subCategory4',
-                    tasks: [
-                        {
-                            title: 'C2-task444',
-                            dueDate: '222',
-                            done: true,
-                            doneDate: '1395/05/22'
-                        },
-                        {
-                            title: 'C2-task222',
-                            dueDate: '333',
-                            done: false,
-                            doneDate: '1395/05/22'
-                        }
-                    ]
-                }
-            ]
+            name: 'Teamwork'
         }
     ];
 

@@ -100,9 +100,11 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
         }
         var parts = date.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
         if (parts) {
-            $scope.newTask.dueDate = new Date(parseInt(parts[1], 10),
+            $scope.newTask.dueDate = new Date(
+                parseInt(parts[1], 10),
                 parseInt(parts[2], 10) - 1,
-                parseInt(parts[3], 10));
+                parseInt(parts[3], 10)
+            );
             $scope.dueDateError = false;
             return true;
         }
@@ -124,8 +126,8 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
         if (parts) {
             var hours = parseInt(parts[1]);
             var minutes = parseInt(parts[2]);
-            $scope.newTask.dueDate.setHours(hours);
-            $scope.newTask.dueDate.setMinutes(minutes);
+            ($scope.newTask.dueDate).setHours(hours);
+            ($scope.newTask.dueDate).setMinutes(minutes);
             $scope.dueTimeError = false;
             return true;
         }
