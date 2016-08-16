@@ -11,7 +11,7 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
 
     $scope.emptyEditing = function () {
         $scope.editing = {
-            key: null,
+            key: -1,
             bkpTask: {},
             error: false
         };
@@ -42,7 +42,7 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
 
     $scope.submitTask = function () {
         if (!$scope.dueDateError && !$scope.dueTimeError) {
-            if ($scope.editing.key !== null) {  // if editing an item...
+            if ($scope.editing.key !== -1) {  // if editing an item...
                 $scope.emptyEditing();
                 $scope.newTask = {};
             } else {    // if adding a new item...
@@ -55,7 +55,7 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
 
     $scope.editTask = function (key) {
         var task = $scope.tasks[key];
-        if ($scope.editing.key !== null) {  // if editing an item...
+        if ($scope.editing.key !== -1) {  // if editing an item...
             $scope.taskEditCancel();
         }
         $scope.editing = {
@@ -90,6 +90,18 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
         task.doneDate = task.done ? new Date() : null; // TODO: fix this, convert to a filter (if null, return '--')
     };
 
+    var parseDate = function (date) {
+        var parts = date.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
+        if (parts) {
+            return new Date(
+                parseInt(parts[1], 10),
+                parseInt(parts[2], 10) - 1,
+                parseInt(parts[3], 10)
+            );
+        }
+        return null;
+    };
+
     $scope.validateDate = function (date) {
         if (!date) {
             date = $scope.newTaskDueDate;
@@ -98,17 +110,13 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
             $scope.dueDateError = false;
             return true;
         }
-        var parts = date.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
-        if (parts) {
-            $scope.newTask.dueDate = new Date(
-                parseInt(parts[1], 10),
-                parseInt(parts[2], 10) - 1,
-                parseInt(parts[3], 10)
-            );
+        $scope.newTask.dueDate = parseDate(date);
+        if($scope.newTask.dueDate) {
             $scope.dueDateError = false;
             return true;
         }
-        else {
+        else
+        {
             $scope.dueDateError = true;
             return false;
         }
@@ -141,12 +149,13 @@ app.controller('TaskListCtrl', ['$scope', '$stateParams', '$filter', function ($
         if (!task.dueDate) { // if dueDate is not set, deadline would never be passed
             return false;
         }
-        return task.dueDate < (new Date());
+        return (new Date(task.dueDate) < (new Date()));
     };
 
     $scope.deadlineClose = function (task) {
         var now = new Date();
-        var diff = task.dueDate - now;
+        var due = new Date(task.dueDate);
+        var diff = due - now;
         return (diff < 8.64e+7 && diff >= 0); // 24 hours in milliseconds: 8.64e+7
     };
 

@@ -67,13 +67,6 @@ body {
     text-decoration: line-through;
 }
 
-.important {
-    margin-bottom: 0;
-    /*border: dashed 1px gold;*/
-    /*box-shadow: gold 0 0 3px;*/
-    z-index: 999;
-}
-
 .star-task {
     color: gold;
     position: absolute;
