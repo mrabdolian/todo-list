@@ -1,4 +1,14 @@
-var app = angular.module('todoListApp', ['ui.router']);
+var app = angular.module('todoListApp', ['ui.router', 'ui.bootstrap']);
+
+app.filter('startFrom', function () {
+    return function (input, start) {
+        if (input) {
+            start = +start;
+            return input.slice(start);
+        }
+        return [];
+    };
+});
 
 app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
@@ -66,7 +76,7 @@ app.controller('MainCtrl', ['$rootScope', function ($rootScope) {
                             "description": "Buy milk at 6 O'clock.",
                             "important": false,
                             "dueDate": "2016-08-18T01:30:00.000Z",
-                            "done": false,
+                            "done": true,
                             "doneDate": null
                         },
                         {

@@ -71,7 +71,8 @@
         </div>
         <div class="new-task-errors" ng-show="editing.error || dueDateError || dueTimeError">
             <div class="text-danger" ng-show="editing.error">
-                The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and try
+                The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and
+                try
                 again.
             </div>
             <div class="text-danger" ng-show="dueDateError">
@@ -82,18 +83,20 @@
             </div>
         </div>
     </form>
-    <!-- Filters -->
+    <!-- Filters and paging option -->
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group">
                 <label for="searchInput">Search:</label>
-                <input class="form-control input-sm" name="searchInput" id="searchInput" ng-model="filters.search" placeholder="Search by everything" type="text">
+                <input class="form-control input-sm" name="searchInput" id="searchInput" ng-model="filters.search"
+                       placeholder="Search by everything" type="text">
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="form-group">
                 <label for="filterSelect">Filter:</label>
-                <select class="form-control input-sm" name="filterSelect" id="filterSelect" ng-model="filters.filter" ng-change="setFilter()">
+                <select class="form-control input-sm" name="filterSelect" id="filterSelect" ng-model="filters.filter"
+                        ng-change="filterChange()">
                     <option value="">None (All Tasks)</option>
                     <option value="undone">Undone</option>
                     <option value="important">Important</option>
@@ -102,10 +105,11 @@
                 </select>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="form-group">
                 <label for="orderBySelect">Order by:</label>
-                <select class="form-control input-sm" name="orderBySelect" id="orderBySelect" ng-model="filters.orderBy">
+                <select class="form-control input-sm" name="orderBySelect" id="orderBySelect"
+                        ng-model="filters.orderBy">
                     <option value="">None (Added Date)</option>
                     <option value="dueDate">Due Date</option>
                     <option value="doneDate" ng-disabled="filters.filter!=''">Done Date</option>
@@ -114,12 +118,29 @@
                 </select>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="form-group">
                 <label for="directionSelect">Direction:</label>
-                <select class="form-control input-sm" name="directionSelect" id="directionSelect" ng-model="filters.direction">
+                <select class="form-control input-sm" name="directionSelect" id="directionSelect"
+                        ng-model="filters.direction">
                     <option value="">Ascending</option>
                     <option value="reverse">Descending</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="itemsPerPageSelect">Items Per Page:</label>
+                <select name="itemsPerPageSelect" id="itemsPerPageSelect" class="form-control input-sm"
+                        ng-model="paging.itemsPerPage" ng-change="setPage('1')">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
                 </select>
             </div>
         </div>
@@ -146,7 +167,9 @@
         </div>
     </li>
     <li class="list-group-item row task-row" ng-class="{'done': task.done}"
-        ng-repeat="(key, task) in tasks | orderBy: filters.orderBy:filters.direction | filter: filters.filters | filter: filters.search">
+        ng-repeat="(key, task) in filtered = tasks
+        | orderBy: filters.orderBy:filters.direction | filter: filters.filters | filter: filters.search
+        | startFrom:(paging.currentPage-1)*paging.itemsPerPage | limitTo: paging.itemsPerPage">
         <div class="bar-group" ng-hide="task.done">
             <div class="bar bar-gold" ng-show="task.important"></div>
             <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
@@ -180,3 +203,9 @@
         </div>
     </li>
 </ul>
+<div class="text-center">
+    <ul uib-pagination total-items="paging.totalItems" ng-model="paging.currentPage" max-size="paging.maxSize"
+        class="pagination" boundary-link-numbers="true" num-pages="paging.numOfPages"
+        items-per-page="paging.itemsPerPage"></ul>
+    <!--<pre>Page: {{paging.currentPage}} / {{paging.numOfPages}}</pre>-->
+</div>
