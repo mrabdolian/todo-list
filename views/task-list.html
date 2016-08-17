@@ -1,68 +1,75 @@
-<form name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-group">
-                <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle" ng-model="newTask.title"
-                       type="text" placeholder="+ New Task">
+<div class="row well big-well add-task-well">
+    <form name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle"
+                           ng-model="newTask.title"
+                           type="text" placeholder="+ New Task">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-3" ng-show="newTask.title">
-            <div class="form-group">
-                <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime"
-                       placeholder="Due Date {{dateFormat}}" ng-change="validateDate()">
+            <div class="col-sm-3" ng-show="newTask.title">
+                <div class="form-group">
+                    <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime"
+                           placeholder="Due Date ({{dateFormat}})" ng-change="validateDate()">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-3" ng-show="newTask.title">
-            <div class="form-group">
-                <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime"
-                       placeholder="Due Time ({{timeFormat}})" ng-change="validateTime()" ng-disabled="!newTask.dueDate">
+            <div class="col-sm-3" ng-show="newTask.title">
+                <div class="form-group">
+                    <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime"
+                           placeholder="Due Time ({{timeFormat}})" ng-change="validateTime()"
+                           ng-disabled="!newTask.dueDate">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-2" ng-show="newTask.title">
-            <div class="form-group inline">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" ng-model="newTask.important">Important?
-                    </label>
+            <div class="col-sm-2" ng-show="newTask.title">
+                <div class="form-group inline">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="newTask.important">Important?
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row" ng-show="newTask.title || editing.key>-1">
-        <div class="col-sm-10">
-            <div class="form-group">
-                <input class="form-control" ng-model="newTask.description" type="text"
-                       placeholder="Task Description...">
+        <div class="row" ng-show="newTask.title || editing.key>-1">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <input class="form-control" ng-model="newTask.description" type="text"
+                           placeholder="Task Description...">
+                </div>
+            </div>
+            <div class="col-sm-2" ng-hide="editing.key>-1">
+                <div class="form-group">
+                    <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError && dueTimeError"
+                            type="submit">
+                        &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-2" ng-show="editing.key>-1">
+                <div class="form-group">
+                    <button class="btn btn-danger" type="button" ng-click="taskEditCancel()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                    <button class="btn btn-success" ng-disabled="!newTask.title && dueDateError && dueTimeError"
+                            type="submit">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="col-sm-2" ng-hide="editing.key>-1">
-            <div class="form-group">
-                <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError && dueTimeError"
-                        type="submit">
-                    &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
-                </button>
-            </div>
+        <div class="text-danger" ng-show="editing.error">
+            The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and try
+            again.
         </div>
-        <div class="col-sm-2" ng-show="editing.key>-1">
-            <div class="form-group">
-                <button class="btn btn-danger" type="button" ng-click="taskEditCancel()">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>
-                <button class="btn btn-success" ng-disabled="!newTask.title && dueDateError && dueTimeError"
-                        type="submit">
-                    <span class="glyphicon glyphicon-ok"></span>
-                </button>
-            </div>
+        <div class="text-danger" ng-show="dueDateError">Due Date is not in valid format. Please use '{{dateFormat}}'
         </div>
-    </div>
-    <div class="text-danger" ng-show="editing.error">The item you're trying to remove is under editing. Please Cancel or
-        Save the changes and try again.
-    </div>
-    <div class="text-danger" ng-show="dueDateError">Due Date is not in valid format. Please use '{{dateFormat}}'</div>
-    <div class="text-danger" ng-show="dueTimeError">Due Time is not in valid format. Please use '{{timeFormat}}'</div>
-</form>
+        <div class="text-danger" ng-show="dueTimeError">Due Time is not in valid format. Please use '{{timeFormat}}'
+        </div>
+    </form>
+</div>
 <br>
-<ul class="list-group">
+<ul class="list-group tasks-list">
     <li class="list-group-item row task-row-header">
         <div class="col-sm-1 col-lg-1">
             <span class="glyphicon glyphicon-move"></span>
@@ -74,9 +81,10 @@
     </li>
     <li class="list-group-item row" ng-hide="tasks[0]">
         <div class="col-sm-10 col-sm-offset-1">
-            <h3 class="text-center empty-task-text">
-                Nothing here!<br>Why don't add a new task?<br>
-                <button class="btn btn-primary" type="button" ng-click="focusOnNewTask()">Add new task</button>
+            <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
+                <span>Nothing yet!</span><br>
+                <p>Start scheduling!</p>
+                <button class="btn btn-warning" type="button" ng-click="focusOn('#newTaskTitle')">Add new task</button>
             </h3>
         </div>
     </li>

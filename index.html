@@ -5,17 +5,23 @@
     <title>ToDo List App</title>
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="lib/jquery/dist/jquery.min.js"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers/category.js"></script>
     <script src="js/controllers/sub-category.js"></script>
     <script src="js/controllers/task-list.js"></script>
-    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="js/controllers/done-tasks.js"></script>
+    <script src="js/controllers/delete-category.js"></script>
+    <script src="js/controllers/delete-sub-category.js"></script>
 </head>
 <body ng-app="todoListApp" ng-controller="MainCtrl">
 <div class="container-fluid">
     <div ui-view></div>
+</div>
+<div class="main-footer text-center">
+    <a class="no-decoration" href="https://github.com/mrabdolian/todo-list.git">mrabdolian</a>
 </div>
 </body>
 </html>

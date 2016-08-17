@@ -1,17 +1,42 @@
-<div ng-show="stateIs('category.categoryId')">
-    <form name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
-        <input class="" ng-model="newSubCategory" type="text" placeholder="+ New SubCategory" size="50">
-        <button class="btn btn-default btn-sm" ng-show="newSubCategory" ng-disabled="!newSubCategory" type="submit">+</button>
-    </form>
-    <div class="row">
-        <ul>
-            <li ng-repeat="subCat in subCategories">
-                <a class="subcat-title"
-                   ui-sref="category.categoryId.subCategoryId({subCategoryId: {{subCategories.indexOf(subCat)}}})">
-                    {{subCat.name}}
-                </a>
-            </li>
-        </ul>
+<div ng-show="category.hasSubCat">
+    <div class="well">
+        <h3 class="title">SubCategories</h3>
+        <p class="gray">{{category.name}}/</p>
+        <a class="btn btn-danger delete-category clearfix" ui-sref="delete.cat({'catId': activeState})">
+            Delete Category
+        </a>
+        <form class="padding-top-20" name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
+            <div class="row clearfix">
+                <input class="form-control add-input" ng-model="newSubCategory" type="text"
+                       id="addSubCategoryInput" placeholder="New SubCategory">
+                <button class="btn btn-default add-btn" ng-disabled="!newSubCategory" type="submit">
+                    +
+                </button>
+            </div>
+        </form>
+        <div class="big-well padding-bottom-10 padding-top-60 gray" ng-hide="category.subCategories[0]">
+            <span>Create your first SubCategory in this Category!</span>
+            <p></p>
+            <br>
+            <button class="btn btn-success" type="button" ng-click="focusOn('#addSubCategoryInput')">
+                Add First SubCategory
+            </button>
+        </div>
+        <div class="list-group cat-list padding-top-30" ng-show="categories[0]">
+            <a class="list-group-item" ng-repeat="subCat in category.subCategories"
+               ui-sref="category.categoryId.subCategoryId({subCategoryId: {{category.subCategories.indexOf(subCat)}}})">
+                <span class="badge">{{countItems(subCat)}}</span>
+                {{subCat.name}}
+            </a>
+        </div>
+    </div>
+</div>
+<div ng-hide="category.hasSubCat || category.tasks">
+    <div class="well big-well">
+        <span>Need SubCategories?</span>
+        <p>Please choose how you gonna fill this Category:</p><br>
+        <button class="btn btn-success" type="button" ng-click="chooseSubCat()">Add SubCategory</button>
+        <button class="btn btn-warning" type="button" ng-click="chooseTask()">Add Task Directly</button>
     </div>
 </div>
 <div ui-view></div>

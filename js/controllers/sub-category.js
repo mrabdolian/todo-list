@@ -1,18 +1,39 @@
-app.controller('SubCategoryCtrl', ['$scope', '$stateParams', '$state', function ($scope, $stateParams, $state) {
+app.controller('SubCategoryCtrl', ['$rootScope', '$scope', '$stateParams', '$state', '$location',
+    function ($rootScope, $scope, $stateParams, $state, $location) {
 
-    $scope.stateIs = function (state) {
-        return $state.is(state);
-    };
+        // set activeState to catId
+        $rootScope.activeState = $stateParams.categoryId;
 
-    $scope.subCategories = $scope.categories[$stateParams.categoryId].subCategories;
+        // set a new variable to get category model from root scope
+        $rootScope.category = $rootScope.categories[$stateParams.categoryId];
 
-    $scope.addSubCategory = function () {
-        $scope.subCategories.push({
-            name: $scope.newSubCategory,
-            tasks: []
-        });
+        // the function to redirect to tasks-list (when there is no subCategories)
+        var noSubRedirect = function () {
+            $location.path('/category/' + $stateParams.categoryId + '/sub/-1');
+        };
 
-        $scope.newSubCategory = '';
-    };
+        // call redirect function if there is no subCategories (hasSubCat == false)
+        if ($rootScope.category.hasSubCat === false) {
+            noSubRedirect();
+        }
 
-}]);
+        $scope.chooseSubCat = function () {
+            $rootScope.category.hasSubCat = true;
+            $rootScope.category.subCategories = [];
+        };
+
+        $scope.chooseTask = function () {
+            $rootScope.category.hasSubCat = false;
+            $rootScope.category.tasks = [];
+            noSubRedirect();
+        };
+
+        $scope.addSubCategory = function () {
+            $rootScope.category.subCategories.push({
+                name: $scope.newSubCategory,
+                tasks: []
+            });
+            $scope.newSubCategory = '';
+        };
+
+    }]);
