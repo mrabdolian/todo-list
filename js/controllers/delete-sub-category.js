@@ -1,17 +1,18 @@
-app.controller('DeleteSubCatCtrl', ['$rootScope', '$scope', '$stateParams',
-    function ($rootScope, $scope, $stateParams) {
+app.controller('DeleteSubCatCtrl', ['$rootScope', '$scope', '$stateParams', '$location',
+    function ($rootScope, $scope, $stateParams, $location) {
 
         $scope.type = 'SubCategory';
-        $scope.id = $stateParams.subId;
-        $scope.name = $rootScope.categories[$stateParams.catId].subCategories[$scope.id].name;
+        var catId = $stateParams.catId;
+        var subCatId = $stateParams.subId;
+        $scope.name = $rootScope.categories[catId].subCategories[subCatId].name;
 
         $scope.delete = function () {
-            $rootScope.categories[$stateParams.catId].subCategories.splice($scope.id, 1);
-            $location.path('/category');
+            $rootScope.categories[catId].subCategories.splice(subCatId, 1);
+            $location.path('/category/' + catId);
         };
 
         $scope.cancel = function () {
-            $location.path('/category');
+            $location.path('/category/' + catId);
         };
 
     }]);

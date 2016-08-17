@@ -1,11 +1,11 @@
-<div ng-show="category.hasSubCat">
+<div ng-show="stateIs('category.categoryId') && category.hasSubCat">
     <div class="well">
         <h3 class="title">SubCategories</h3>
         <p class="gray">{{category.name}}/</p>
         <a class="btn btn-danger delete-category clearfix" ui-sref="delete.cat({'catId': activeState})">
             Delete Category
         </a>
-        <form class="padding-top-20" name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
+        <form class="padding-top-20 padding-bottom-30" name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
             <div class="row clearfix">
                 <input class="form-control add-input" ng-model="newSubCategory" type="text"
                        id="addSubCategoryInput" placeholder="New SubCategory">
@@ -14,7 +14,7 @@
                 </button>
             </div>
         </form>
-        <div class="big-well padding-bottom-10 padding-top-60 gray" ng-hide="category.subCategories[0]">
+        <div class="big-well padding-bottom-20 padding-top-10 lightgray" ng-hide="category.subCategories[0]">
             <span>Create your first SubCategory in this Category!</span>
             <p></p>
             <br>
@@ -22,11 +22,14 @@
                 Add First SubCategory
             </button>
         </div>
-        <div class="list-group cat-list padding-top-30" ng-show="categories[0]">
-            <a class="list-group-item" ng-repeat="subCat in category.subCategories"
-               ui-sref="category.categoryId.subCategoryId({subCategoryId: {{category.subCategories.indexOf(subCat)}}})">
+        <div class="row list-group subcat-list clearfix" ng-show="categories[0]" ng-repeat="(key, subCat) in category.subCategories">
+            <a class="list-group-item list-item-lg add-input"
+               ui-sref="category.categoryId.subCategoryId({subCategoryId: key})">
                 <span class="badge">{{countItems(subCat)}}</span>
                 {{subCat.name}}
+            </a>
+            <a class="list-group-item list-item-sm" ui-sref="delete.subCat({'catId': activeState,'subId': key})">
+                <span class="glyphicon glyphicon-trash text-danger"></span>
             </a>
         </div>
     </div>

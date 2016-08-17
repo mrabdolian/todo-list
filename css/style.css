@@ -160,6 +160,7 @@ body {
 }
 
 .add-btn {
+    width: 35px;
     font-weight: bold;
     float: right;
     margin-right: 15px;
@@ -173,13 +174,45 @@ body {
     width: calc(100% - 70px);
 }
 
+.subcat-list {
+    margin-bottom: 0;
+}
+
+.subcat-list:last-child {
+    margin-bottom: 20px;
+}
+
+.list-item-lg {
+    float: left;
+    margin-left: 15px;
+    width: -moz-calc(100% - 70px);
+    width: -webkit-calc(100% - 70px);
+    width: calc(100% - 70px);
+    border-top-left-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+}
+
+.list-item-sm {
+    width: 40px !important;
+    font-weight: bold;
+    float: right;
+    margin-right: 15px;
+    border-top-left-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+    padding-left: 12px;
+}
+
 .cat-list > a {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .cat-list-done > a.active, .cat-list-done > a.active:focus, .cat-list-done > a.active:hover,
-.cat-list-done > li.active, .cat-list-done > li.active:focus, .cat-list-done > li.active:hover{
+.cat-list-done > li.active, .cat-list-done > li.active:focus, .cat-list-done > li.active:hover {
     color: #fff !important;
     background-color: #ca0000 !important;
     border-color: #ca0000 !important;
@@ -199,57 +232,64 @@ body {
 }
 
 .padding-top-10 {
-    padding-top: 10px!important;
+    padding-top: 10px !important;
 }
 
 .padding-bottom-10 {
-    padding-bottom: 10px!important;
+    padding-bottom: 10px !important;
 }
 
 .padding-top-20 {
-    padding-top: 20px!important;
+    padding-top: 20px !important;
 }
 
 .padding-bottom-20 {
-    padding-bottom: 20px!important;
+    padding-bottom: 20px !important;
 }
 
 .padding-top-30 {
-    padding-top: 30px!important;
+    padding-top: 30px !important;
 }
 
 .padding-bottom-30 {
-    padding-bottom: 30px!important;
+    padding-bottom: 30px !important;
 }
 
 .padding-top-40 {
-    padding-top: 40px!important;
+    padding-top: 40px !important;
 }
 
 .padding-bottom-40 {
-    padding-bottom: 40px!important;
+    padding-bottom: 40px !important;
 }
 
 .padding-top-50 {
-    padding-top: 50px!important;
+    padding-top: 50px !important;
 }
 
 .padding-bottom-50 {
-    padding-bottom: 50px!important;
+    padding-bottom: 50px !important;
 }
 
 .padding-top-60 {
-    padding-top: 60px!important;
+    padding-top: 60px !important;
 }
 
 .padding-bottom-60 {
-    padding-bottom: 60px!important;
+    padding-bottom: 60px !important;
 }
 
 .add-task-well {
-    padding-bottom: 0!important;
-    padding-top: 15px!important;
+    padding-bottom: 0 !important;
+    padding-top: 15px !important;
     margin-bottom: 0;
+}
+
+.tasks-header-well {
+    padding-bottom: 0 !important;
+    padding-top: 15px !important;
+    text-align: left!important;
+    margin-bottom: 5px;
 }
 
 .big-well {
@@ -270,23 +310,11 @@ body {
     text-decoration: none;
 }
 
-
-
-
-
-
-
-
-
 .clearfix:after {
     content: "";
     display: table;
     clear: both;
 }
-
-
-
-
 
 .main-footer {
     color: #CCC;
@@ -312,4 +340,8 @@ body {
 
 .tasks-list {
     margin-top: -10px;
+}
+
+.new-task-errors {
+    margin-bottom: 20px;
 }

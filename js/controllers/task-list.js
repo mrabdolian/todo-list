@@ -1,11 +1,15 @@
 app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter',
     function ($rootScope, $scope, $stateParams, $filter) {
 
+        $scope.hasSubCat = null;
+
         // check to see whether this category has subCategories or not
         if ($stateParams.subCategoryId === '-1') {
+            $scope.hasSubCat = false;
             $scope.tasks = $rootScope.category.tasks;
         }
         else {
+            $scope.hasSubCat = true;
             $scope.tasks = $rootScope.category.subCategories[$stateParams.subCategoryId].tasks;
         }
 
@@ -16,6 +20,16 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         // Date Format: if seperator changed, don't forget to change that in regEx string in validateDate() function too.
         $scope.dateFormat = 'yyyy-MM-dd';
         $scope.timeFormat = 'HH:mm';
+
+        // getting subCategory name if present
+        $scope.getSubCatName = function () {
+            return $scope.hasSubCat ? $rootScope.category.subCategories[$stateParams.subCategoryId].name : '';
+        };
+
+        // getting $stateParams.subCategoryId
+        $scope.getSubCatId = function () {
+            return $stateParams.subCategoryId;
+        };
 
         // define new task object function
         $scope.emptyNewTask = function () {

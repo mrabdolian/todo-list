@@ -1,5 +1,16 @@
-<div class="row well big-well add-task-well">
-    <form name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
+<div class="row well big-well tasks-header-well">
+    <h3 class="title">Tasks</h3>
+    <p class="gray">{{category.name}} / {{getSubCatName()}}</p>
+    <a class="btn btn-danger delete-category clearfix" ui-sref="delete.cat({'catId': activeState})"
+       ng-hide="hasSubCat">
+        Delete Category
+    </a>
+    <a class="btn btn-danger delete-category clearfix"
+       ui-sref="delete.subCat({'catId': activeState, 'subId': getSubCatId()})"
+       ng-show="hasSubCat">
+        Delete SubCategory
+    </a>
+    <form class="padding-top-10" name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
@@ -58,13 +69,17 @@
                 </div>
             </div>
         </div>
-        <div class="text-danger" ng-show="editing.error">
-            The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and try
-            again.
-        </div>
-        <div class="text-danger" ng-show="dueDateError">Due Date is not in valid format. Please use '{{dateFormat}}'
-        </div>
-        <div class="text-danger" ng-show="dueTimeError">Due Time is not in valid format. Please use '{{timeFormat}}'
+        <div class="new-task-errors" ng-show="editing.error || dueDateError || dueTimeError">
+            <div class="text-danger" ng-show="editing.error">
+                The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and try
+                again.
+            </div>
+            <div class="text-danger" ng-show="dueDateError">
+                Due Date is not in valid format. Please use '{{dateFormat}}'
+            </div>
+            <div class="text-danger" ng-show="dueTimeError">
+                Due Time is not in valid format. Please use '{{timeFormat}}'
+            </div>
         </div>
     </form>
 </div>
