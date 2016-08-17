@@ -82,6 +82,48 @@
             </div>
         </div>
     </form>
+    <!-- Filters -->
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="searchInput">Search:</label>
+                <input class="form-control input-sm" name="searchInput" id="searchInput" ng-model="filters.search" placeholder="Search by everything" type="text">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="filterSelect">Filter:</label>
+                <select class="form-control input-sm" name="filterSelect" id="filterSelect" ng-model="filters.filter" ng-change="setFilter()">
+                    <option value="">None (All Tasks)</option>
+                    <option value="undone">Undone</option>
+                    <option value="important">Important</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="passed">Deadline Passed</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="orderBySelect">Order by:</label>
+                <select class="form-control input-sm" name="orderBySelect" id="orderBySelect" ng-model="filters.orderBy">
+                    <option value="">None (Added Date)</option>
+                    <option value="dueDate">Due Date</option>
+                    <option value="doneDate" ng-disabled="filters.filter!=''">Done Date</option>
+                    <option value="title">Task Title</option>
+                    <option value="custom">Custom Order</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="directionSelect">Direction:</label>
+                <select class="form-control input-sm" name="directionSelect" id="directionSelect" ng-model="filters.direction">
+                    <option value="">Ascending</option>
+                    <option value="reverse">Descending</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 <br>
 <ul class="list-group tasks-list">
@@ -104,13 +146,12 @@
         </div>
     </li>
     <li class="list-group-item row task-row" ng-class="{'done': task.done}"
-        ng-repeat="(key, task) in tasks">
+        ng-repeat="(key, task) in tasks | orderBy: filters.orderBy:filters.direction | filter: filters.filters | filter: filters.search">
         <div class="bar-group" ng-hide="task.done">
             <div class="bar bar-gold" ng-show="task.important"></div>
             <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
             <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
         </div>
-
         <div class="col-sm-1 col-lg-1">
             <button aria-label="Reorder" class="btn btn-default cursor-move reorder-handle" type="button">
                 <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>

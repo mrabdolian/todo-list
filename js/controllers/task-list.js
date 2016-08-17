@@ -13,6 +13,48 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
             $scope.tasks = $rootScope.category.subCategories[$stateParams.subCategoryId].tasks;
         }
 
+        // define the function for resetting orderBy if filter is set to something other than 'None'
+        var fixOrderBy = function () {
+            if(!$scope.filters.filter == '' && $scope.filters.orderBy == 'doneDate') {
+                $scope.filters.orderBy = 'dueDate';
+            }
+        };
+
+        // define set filters function
+        $scope.setFilter = function () {
+            switch ($scope.filters.filter) {
+                case 'undone':
+                    $scope.filters.filters = {done: false};
+                    break;
+                case 'important':
+                    $scope.filters.filters = {important: true, done: false};
+                    break;
+                case 'upcoming':
+                    $scope.filters.filters = {isClose: true, done: false};
+                    break;
+                case 'passed':
+                    $scope.filters.filters = {isPassed: true, done: false};
+                    break;
+                // case 'done':
+                //     $scope.filters.filters = {done: true};
+                //     break;
+                default:
+                    $scope.filters.filters = {};
+                    break;
+            }
+            fixOrderBy();
+        };
+
+        // init filters values
+        $scope.filters = {
+            search: '',
+            filters: {},
+            orderBy: 'dueDate',
+            direction: ''
+        };
+        $scope.filters.filter = 'undone';
+        $scope.setFilter('undone');
+
         // init date/time errors to false
         $scope.dueDateError = false;
         $scope.dueTimeError = false;
@@ -32,7 +74,7 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         };
 
         // define new task object function
-        $scope.emptyNewTask = function () {
+        var emptyNewTask = function () {
             $scope.newTask = {
                 title: '',
                 description: '',
@@ -47,7 +89,7 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
 
 
         // define reset editing object function
-        $scope.emptyEditing = function () {
+        var emptyEditing = function () {
             $scope.editing = {
                 key: -1,
                 bkpTask: {},
@@ -58,20 +100,20 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         };
 
         // initialise new task object
-        $scope.emptyNewTask();
+        emptyNewTask();
 
         // initialise editing object
-        $scope.emptyEditing();
+        emptyEditing();
 
         // the function to finalise adding/editing a task
         $scope.submitTask = function () {
             if (!$scope.dueDateError && !$scope.dueTimeError) {
                 if ($scope.editing.key !== -1) {  // if editing an item...
-                    $scope.emptyEditing();
+                    emptyEditing();
                     $scope.newTask = {};
                 } else {    // if adding a new item...
                     $scope.tasks.push($scope.newTask);
-                    $scope.emptyNewTask();
+                    emptyNewTask();
                     $scope.focusOn('#newTaskTitle');
                 }
             }
@@ -97,7 +139,7 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         // the function for canceling a task editing
         $scope.taskEditCancel = function () {
             $scope.tasks[$scope.editing.key] = $scope.editing.bkpTask;
-            $scope.emptyEditing();
+            emptyEditing();
             $scope.newTask = {};
             $scope.dueDateError = false;
             $scope.dueTimeError = false;
@@ -191,4 +233,16 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
             return (diff < 8.64e+7 && diff >= 0); // 24 hours in milliseconds: 8.64e+7
         };
 
+        // add isClose and isPassed to 'task'
+        var calculateTaskStatus = function (task) {
+            task.isClose = $scope.deadlineClose(task);
+            task.isPassed = $scope.deadlinePassed(task);
+        };
+
+        // add/refresh isClose and isPassed for all tasks
+        angular.forEach($scope.tasks, function (task, key) {
+            calculateTaskStatus(task);
+        });
+
+        // console.log($scope.tasks);
     }]);
