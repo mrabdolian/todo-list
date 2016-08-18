@@ -32,21 +32,6 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
 
         $scope.slicedTasks = [];
 
-        $scope.$watch('paging.currentPage + paging.numPerPage + tasks + filters.filter', function () {
-            var begin = (($scope.paging.currentPage - 1) * $scope.paging.itemsPerPage)
-                , end = begin + $scope.paging.itemsPerPage;
-
-            $scope.slicedTasks = $scope.tasks.slice(begin, end);
-        });
-
-        // $watch filters to update pagination
-        $scope.$watch('filters', function () {
-            $scope.filtered = filterFilter($scope.tasks, $scope.filters.filters);
-            $scope.filtered = filterFilter($scope.filtered, $scope.filters.search);
-            $scope.paging.totalItems = $scope.filtered.length;
-            $scope.currentPage = 1;
-        }, true);
-
         // define the function for resetting orderBy if filter is set to something other than 'None'
         var fixOrderBy = function () {
             if (!$scope.filters.filter == '' && $scope.filters.orderBy == 'doneDate') {
@@ -88,6 +73,18 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         };
         $scope.filters.filter = 'undone';
         $scope.filterChange('undone');
+
+        $scope.$watchCollection('filters', function () {
+            $scope.filtered = filterFilter($scope.tasks, $scope.filters.filters);
+            $scope.filtered = filterFilter($scope.filtered, $scope.filters.search);
+            $scope.paging.totalItems = $scope.filtered.length;
+            $scope.currentPage = 1;
+        });
+
+        $scope.$watchCollection('tasks', function () {
+            localStorage.setItem("categories", JSON.stringify($rootScope.categories));
+            console.log("Data Saved!");
+        });
 
         // init date/time errors to false
         $scope.dueDateError = false;
@@ -191,8 +188,37 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
             }
         };
 
+        var refreshDoneTasks = function () {
+            $rootScope.doneTasks = [];
+
+            angular.forEach($rootScope.categories, function (cat) {
+                if (cat.hasSubCat == true) {
+                    angular.forEach(cat.subCategories, function (subCat) {
+                        angular.forEach(subCat.tasks, function (task) {
+                            if(task.done) {
+                                $rootScope.doneTasks.push(task);
+                            }
+                        });
+                    });
+                }
+                if (cat.hasSubCat == false) {
+                    angular.forEach(cat.tasks, function (directTask) {
+                        if(directTask.done) {
+                            $rootScope.doneTasks.push(directTask);
+                        }
+                    });
+                }
+            });
+        };
+
+        if($rootScope.doneTasks == undefined) {
+            refreshDoneTasks();
+            console.log("INIT DONE TASKS");
+        }
+
         // the function for setting task done/undone
         $scope.taskDone = function (task) {
+            refreshDoneTasks();
             task.doneDate = task.done ? new Date() : null; // TODO: fix this, convert to a filter (if null, return '--')
         };
 
@@ -280,7 +306,6 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
             calculateTaskStatus(task);
         });
 
-        // console.log($scope.tasks);
     }
 ])
 ;

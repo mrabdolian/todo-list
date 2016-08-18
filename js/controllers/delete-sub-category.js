@@ -12,7 +12,7 @@ app.controller('DeleteSubCatCtrl', ['$rootScope', '$scope', '$stateParams', '$lo
         };
 
         $scope.cancel = function () {
-            $location.path('/category/' + catId);
+            $location.path('/category/' + catId + '/sub/' + subCatId);
         };
 
     }]);

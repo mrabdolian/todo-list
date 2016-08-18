@@ -2,7 +2,7 @@ app.controller('CategoryCtrl', ['$rootScope', '$scope', '$location', function ($
 
     $rootScope.activeState = null;
 
-    // the function
+    // the function to focus on an element using jQuery
     $rootScope.focusOn = function (element) {
         $(element).focus();
     };

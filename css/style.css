@@ -345,3 +345,7 @@ body {
 .new-task-errors {
     margin-bottom: 20px;
 }
+
+.star-done-task {
+    color: gold;
+}

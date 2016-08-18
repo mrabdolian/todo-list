@@ -2,4 +2,8 @@ app.controller('DoneTasksListCtrl', ['$rootScope', '$scope', function ($rootScop
 
     $rootScope.activeState = 'doneTasks';
 
+    // $scope.removeDoneTask = function (key) {
+    //     $scope.tasks.splice(key, 1);
+    // }
+
 }]);

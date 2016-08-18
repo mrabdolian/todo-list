@@ -76,7 +76,7 @@ app.controller('MainCtrl', ['$rootScope', function ($rootScope) {
                             "description": "Buy milk at 6 O'clock.",
                             "important": false,
                             "dueDate": "2016-08-18T01:30:00.000Z",
-                            "done": true,
+                            "done": false,
                             "doneDate": null
                         },
                         {
@@ -124,5 +124,16 @@ app.controller('MainCtrl', ['$rootScope', function ($rootScope) {
             hasSubCat: null
         }
     ];
+
+    if (localStorage.categories) {
+        $rootScope.categories = JSON.parse(localStorage.getItem("categories"));
+        console.log("Data Loaded!");
+    }
+
+    $rootScope.$watchCollection('categories', function () {
+        localStorage.setItem("categories", JSON.stringify($rootScope.categories));
+        console.log("Data Saved!");
+    });
+
 
 }]);

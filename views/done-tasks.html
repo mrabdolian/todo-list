@@ -1,2 +1,49 @@
-<h3 class="title">Done Tasks</h3>
-<p class="gray">The tasks you've already done.</p><br>
+<div class="row well big-well tasks-header-well">
+    <h3 class="title">Done Tasks</h3>
+    <p class="gray">The tasks you've already done.</p><br>
+    <!-- Delete All button -->
+    <!-- Filters and paging option -->
+</div>
+<br>
+<ul class="list-group tasks-list">
+    <li class="list-group-item row task-row-header">
+        <div class="col-sm-1 col-lg-1">
+            <span class="glyphicon glyphicon-move"></span>
+        </div>
+        <div class="col-sm-4 col-lg-7 seperator"><label>Title</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>Due Date</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>Done Date</label></div>
+        <!--<div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>-->
+    </li>
+    <li class="list-group-item row" ng-hide="doneTasks[0]">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
+                <span>No Done Tasks.</span><br>
+                <!--<p></p>-->
+            </h3>
+        </div>
+    </li>
+    <li class="list-group-item row task-row" ng-repeat="(key, task) in doneTasks | orderBy: doneDate:'reverse'">
+        <div class="bar-group">
+            <div class="bar bar-gold" ng-show="task.important"></div>
+            <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
+            <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
+        </div>
+        <div class="col-sm-1 col-lg-1">
+            <button aria-label="Reorder" class="btn btn-default cursor-move reorder-handle" type="button">
+                <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
+            </button>
+        </div>
+        <div class="col-sm-4 col-lg-7 padding-top-10">
+            <span class="glyphicon glyphicon-star star-done-task" ng-show="task.important"></span>
+            <span>{{task.title}}</span>
+        </div>
+        <div class="col-sm-2 col-lg-2 seperator padding-top-10"><label>{{task.dueDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
+        <div class="col-sm-2 col-lg-2 seperator padding-top-10"><label>{{task.doneDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
+        <!--<div class="col-sm-3 col-lg-2 seperator">-->
+            <!--<button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeDoneTask(key)">-->
+                <!--<span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>-->
+            <!--</button>-->
+        <!--</div>-->
+    </li>
+</ul>
