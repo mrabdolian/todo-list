@@ -2,6 +2,21 @@ app.controller('CategoryCtrl', ['$rootScope', '$scope', '$location', function ($
 
     $rootScope.activeState = null;
 
+    $scope.sortingLog = [];
+
+    $scope.sortableOptions = {
+        'ui-floating': true,
+        stop: function (e, ui) {
+            // this callback has the changed model
+            var logEntry = $rootScope.categories.map(function(i){
+                return $rootScope.categories.indexOf(i);
+            }).join(', ');
+
+            $scope.sortingLog.push(logEntry);
+            console.log(logEntry);
+        }
+    };
+
     // the function to focus on an element using jQuery
     $rootScope.focusOn = function (element) {
         $(element).focus();
@@ -29,5 +44,6 @@ app.controller('CategoryCtrl', ['$rootScope', '$scope', '$location', function ($
         }
         return null;
     };
+
 
 }]);

@@ -12,6 +12,10 @@ app.controller('SubCategoryCtrl', ['$rootScope', '$scope', '$stateParams', '$sta
             return $state.is(state);
         };
 
+        $scope.sortableOptions = {
+            'ui-floating': true
+        };
+
         // the function to redirect to tasks-list (when there is no subCategories)
         var noSubRedirect = function () {
             $location.path('/category/' + $stateParams.categoryId + '/sub/-1');
@@ -40,9 +44,5 @@ app.controller('SubCategoryCtrl', ['$rootScope', '$scope', '$stateParams', '$sta
             });
             $scope.newSubCategory = '';
         };
-
-        $scope.deleteSubCat = function (key) {
-
-        }
 
     }]);

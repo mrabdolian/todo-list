@@ -7,7 +7,7 @@ app.controller('DeleteCatCtrl', ['$rootScope', '$scope', '$stateParams', '$locat
 
         $scope.delete = function () {
             $rootScope.categories.splice(catId, 1);
-            console.log($rootScope.categories);
+            $rootScope.refreshDoneTasks();
             $location.path('/category');
         };
 

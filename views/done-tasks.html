@@ -10,9 +10,9 @@
         <div class="col-sm-1 col-lg-1">
             <span class="glyphicon glyphicon-move"></span>
         </div>
-        <div class="col-sm-4 col-lg-7 seperator"><label>Title</label></div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>Due Date</label></div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>Done Date</label></div>
+        <div class="col-sm-5 col-lg-7 seperator"><label>Title</label></div>
+        <div class="col-sm-3 col-lg-2 seperator"><label>Due Date</label></div>
+        <div class="col-sm-3 col-lg-2 seperator"><label>Done Date</label></div>
         <!--<div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>-->
     </li>
     <li class="list-group-item row" ng-hide="doneTasks[0]">
@@ -34,12 +34,12 @@
                 <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
             </button>
         </div>
-        <div class="col-sm-4 col-lg-7 padding-top-10">
+        <div class="col-sm-5 col-lg-7 padding-top-10">
             <span class="glyphicon glyphicon-star star-done-task" ng-show="task.important"></span>
             <span>{{task.title}}</span>
         </div>
-        <div class="col-sm-2 col-lg-2 seperator padding-top-10"><label>{{task.dueDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
-        <div class="col-sm-2 col-lg-2 seperator padding-top-10"><label>{{task.doneDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
+        <div class="col-sm-3 col-lg-2 seperator padding-top-10"><label>{{task.dueDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
+        <div class="col-sm-3 col-lg-2 seperator padding-top-10"><label>{{task.doneDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
         <!--<div class="col-sm-3 col-lg-2 seperator">-->
             <!--<button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeDoneTask(key)">-->
                 <!--<span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>-->

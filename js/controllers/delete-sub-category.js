@@ -8,11 +8,17 @@ app.controller('DeleteSubCatCtrl', ['$rootScope', '$scope', '$stateParams', '$lo
 
         $scope.delete = function () {
             $rootScope.categories[catId].subCategories.splice(subCatId, 1);
+            $rootScope.refreshDoneTasks();
             $location.path('/category/' + catId);
         };
 
         $scope.cancel = function () {
-            $location.path('/category/' + catId + '/sub/' + subCatId);
+            if($stateParams.from == 'tasks') {
+                $location.path('/category/' + catId + '/sub/' + subCatId);
+            }
+            else {
+                $location.path('/category/' + catId);
+            }
         };
 
     }]);

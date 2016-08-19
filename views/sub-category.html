@@ -22,15 +22,17 @@
                 Add First SubCategory
             </button>
         </div>
-        <div class="row list-group subcat-list clearfix" ng-show="categories[0]" ng-repeat="(key, subCat) in category.subCategories">
-            <a class="list-group-item list-item-lg add-input"
-               ui-sref="category.categoryId.subCategoryId({subCategoryId: key})">
-                <span class="badge">{{countItems(subCat)}}</span>
-                {{subCat.name}}
-            </a>
-            <a class="list-group-item list-item-sm" ui-sref="delete.subCat({'catId': activeState,'subId': key})">
-                <span class="glyphicon glyphicon-trash text-danger"></span>
-            </a>
+        <div ui-sortable="sortableOptions" ng-model="category.subCategories">
+            <div class="row list-group subcat-list clearfix" ng-show="categories[0]" ng-repeat="(key, subCat) in category.subCategories">
+                <a class="list-group-item list-item-lg-left add-input"
+                   ui-sref="category.categoryId.subCategoryId({subCategoryId: key})">
+                    <span class="badge">{{countItems(subCat)}}</span>
+                    <span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;{{subCat.name}}
+                </a>
+                <a class="list-group-item list-item-sm-right" ui-sref="delete.subCat({'catId': activeState,'subId': key, 'from': 'subCat'})">
+                    <span class="glyphicon glyphicon-trash text-danger"></span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

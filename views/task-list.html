@@ -1,12 +1,12 @@
 <div class="row well big-well tasks-header-well">
-    <h3 class="title">Tasks</h3>
+    <h3 class="title">Tasks <span class="badge badge-tasks">{{tasks.length}}</span></h3>
     <p class="gray">{{category.name}} / {{getSubCatName()}}</p>
     <a class="btn btn-danger delete-category clearfix" ui-sref="delete.cat({'catId': activeState})"
        ng-hide="hasSubCat">
         Delete Category
     </a>
     <a class="btn btn-danger delete-category clearfix"
-       ui-sref="delete.subCat({'catId': activeState, 'subId': getSubCatId()})"
+       ui-sref="delete.subCat({'catId': activeState, 'subId': getSubCatId(), 'from': 'tasks'})"
        ng-show="hasSubCat">
         Delete SubCategory
     </a>
@@ -112,9 +112,9 @@
                         ng-model="filters.orderBy">
                     <option value="">None (Added Date)</option>
                     <option value="dueDate">Due Date</option>
-                    <option value="doneDate" ng-disabled="filters.filter!=''">Done Date</option>
+                    <option value="doneDate" ng-disabled="isAnyFilterActive()">Done Date</option>
                     <option value="title">Task Title</option>
-                    <option value="custom">Custom Order</option>
+                    <option value="custom" ng-disabled="isAnyFilterActive()">Custom Order</option>
                 </select>
             </div>
         </div>
@@ -132,7 +132,7 @@
             <div class="form-group">
                 <label for="itemsPerPageSelect">Items Per Page:</label>
                 <select name="itemsPerPageSelect" id="itemsPerPageSelect" class="form-control input-sm"
-                        ng-model="paging.itemsPerPage" ng-change="setPage('1')">
+                        ng-model="itemsPerPage">
                     <option value="3">3</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -141,13 +141,14 @@
                     <option value="40">40</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
+                    <option value="noLimit">No Limit</option>
                 </select>
             </div>
         </div>
     </div>
 </div>
 <br>
-<ul class="list-group tasks-list">
+<ul class="list-group tasks-list" ui-sortable="sortableOptions" ng-model="tasks">
     <li class="list-group-item row task-row-header">
         <div class="col-sm-1 col-lg-1">
             <span class="glyphicon glyphicon-move"></span>
@@ -166,19 +167,27 @@
             </h3>
         </div>
     </li>
+    <li class="list-group-item row" ng-hide="filtered[0] || !tasks[0]">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
+                <span>No tasks...</span><br>
+                <p> matched your filters!</p>
+            </h3>
+        </div>
+    </li>
     <li class="list-group-item row task-row" ng-class="{'done': task.done}"
-        ng-repeat="(key, task) in filtered = tasks
-        | orderBy: filters.orderBy:filters.direction | filter: filters.filters | filter: filters.search
-        | startFrom:(paging.currentPage-1)*paging.itemsPerPage | limitTo: paging.itemsPerPage">
+        ng-repeat="(key, task) in filtered">
         <div class="bar-group" ng-hide="task.done">
             <div class="bar bar-gold" ng-show="task.important"></div>
             <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
             <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
         </div>
         <div class="col-sm-1 col-lg-1">
-            <button aria-label="Reorder" class="btn btn-default cursor-move reorder-handle" type="button">
+            <a aria-label="Reorder" class="btn btn-default reorder-handle reorder-handle-cursor"
+               ng-class="{'default-cursor': sortableOptions.disabled}"
+               disabled="disabled">
                 <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
-            </button>
+            </a>
         </div>
         <div class="col-sm-4 col-lg-5">
             <span class="glyphicon glyphicon-star star-task" ng-show="task.important"></span>
@@ -204,8 +213,8 @@
     </li>
 </ul>
 <div class="text-center">
-    <ul uib-pagination total-items="paging.totalItems" ng-model="paging.currentPage" max-size="paging.maxSize"
-        class="pagination" boundary-link-numbers="true" num-pages="paging.numOfPages"
-        items-per-page="paging.itemsPerPage"></ul>
-    <!--<pre>Page: {{paging.currentPage}} / {{paging.numOfPages}}</pre>-->
+    <ul uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize"
+        class="pagination" boundary-link-numbers="true" num-pages="numOfPages"
+        items-per-page="itemsPerPage"></ul>
+    <pre>Page: {{currentPage}} / {{numOfPages}}</pre>
 </div>

@@ -1,311 +1,342 @@
-app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter', 'filterFilter',
-    function ($rootScope, $scope, $stateParams, $filter, filterFilter) {
+app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter', function ($rootScope, $scope, $stateParams, $filter) {
 
-        $scope.hasSubCat = null;
+    $scope.hasSubCat = null;
 
-        // check to see whether this category has subCategories or not
-        if ($stateParams.subCategoryId === '-1') {
-            $scope.hasSubCat = false;
-            $scope.tasks = $rootScope.category.tasks;
+    // check to see whether this category has subCategories or not
+    if ($stateParams.subCategoryId === '-1') {
+        $scope.hasSubCat = false;
+        $scope.tasks = $rootScope.category.tasks;
+    }
+    else {
+        $scope.hasSubCat = true;
+        $scope.tasks = $rootScope.category.subCategories[$stateParams.subCategoryId].tasks;
+    }
+
+    $scope.filtered = $scope.tasks;
+
+    // set paging properties
+    $scope.itemsPerPage = 5;
+    $scope.totalItems = $scope.filtered.length;
+    $scope.currentPage = 1;
+    $scope.maxSize = 3;
+
+    $scope.sortableOptions = {
+        'ui-floating': true,
+        handle: '.reorder-handle',
+        disabled: true
+    };
+
+    var refreshTotalItems = function () {
+        $scope.totalItems = $scope.filtered.length;
+    };
+
+    $scope.setPage = function (pageNo) {
+        $scope.currentPage = pageNo;
+    };
+
+    // define the function for resetting orderBy if filter is set to something other than 'None'
+    var fixOrderBy = function () {
+        if ($scope.filters.filter != '' && ($scope.filters.orderBy == 'doneDate' || $scope.filters.orderBy == 'custom')) {
+            $scope.filters.orderBy = 'dueDate';
+        }
+    };
+
+    // define set filters function
+    $scope.filterChange = function () {
+        switch ($scope.filters.filter) {
+            case 'undone':
+                $scope.filters.filters = {done: false};
+                break;
+            case 'important':
+                $scope.filters.filters = {important: true, done: false};
+                break;
+            case 'upcoming':
+                $scope.filters.filters = {isClose: true, done: false};
+                break;
+            case 'passed':
+                $scope.filters.filters = {isPassed: true, done: false};
+                break;
+            default:
+                $scope.filters.filters = {};
+                break;
+        }
+        fixOrderBy();
+    };
+
+    // init filters values
+    $scope.filters = {
+        search: '',
+        filter: 'undone',
+        filters: {},
+        orderBy: 'dueDate',
+        direction: ''
+    };
+    $scope.filterChange('undone');
+
+    // to disable some options in UI
+    $scope.isAnyFilterActive = function () {
+        return $scope.filters.filter != '';
+    };
+
+    // update filtered model function
+    var updateFiltered = function () {
+        $scope.filtered = $filter('filter')($scope.tasks, $scope.filters.filters);
+        $scope.filtered = $filter('filter')($scope.filtered, $scope.filters.search);
+        $scope.filtered = $filter('orderBy')($scope.filtered, $scope.filters.orderBy, $scope.filters.direction);
+        $scope.totalItems = $scope.filtered.length;
+        $scope.filtered = $filter('startFrom')($scope.filtered, (($scope.currentPage - 1) * $scope.itemsPerPage));
+        $scope.filtered = $filter('limitTo')($scope.filtered, $scope.itemsPerPage);
+        if ($scope.currentPage > $scope.numOfPages) {
+            $scope.currentPage = 1;
+        }
+    };
+
+    $scope.$watchCollection('filters', function () {
+        updateFiltered();
+    });
+
+    $scope.$watch('tasks', function () {
+        updateFiltered();
+    }, true);
+
+    $scope.$watch('itemsPerPage', function () {
+        if ($scope.itemsPerPage == 'noLimit') {
+            $scope.filtered = $filter('filter')($scope.tasks, $scope.filters.filters);
+            $scope.filtered = $filter('filter')($scope.filtered, $scope.filters.search);
+            $scope.filtered = $filter('orderBy')($scope.filtered, $scope.filters.orderBy, $scope.filters.direction);
+            $scope.totalItems = $scope.filtered.length;
+            $scope.currentPage = 1;
         }
         else {
-            $scope.hasSubCat = true;
-            $scope.tasks = $rootScope.category.subCategories[$stateParams.subCategoryId].tasks;
+            updateFiltered();
         }
+        localStorage.setItem("itemsPerPage", $scope.itemsPerPage);
+    });
 
-        $scope.filtered = $scope.tasks;
+    $scope.$watch('currentPage', function () {
+        updateFiltered();
+    });
 
-        $scope.paging = {
-            itemsPerPage: 5,
-            totalItems: $scope.filtered.length,
-            currentPage: 1,
-            maxSize: 3
+    if (localStorage.itemsPerPage) {
+        $scope.itemsPerPage = localStorage.getItem("itemsPerPage");
+    }
+    if (localStorage.direction) {
+        $scope.filters.direction = localStorage.getItem("direction");
+    }
+    if (localStorage.orderBy) {
+        var orderBy = localStorage.getItem("orderBy");
+        if (orderBy == 'custom') {
+            $scope.filters.filter = '';
+            $scope.filterChange('');
+        }
+        $scope.filters.orderBy = orderBy;
+    }
+
+    $scope.$watch('filters.orderBy', function () {
+        if ($scope.filters.orderBy == 'custom') {
+            $scope.sortableOptions.disabled = false;
+        }
+        else {
+            $scope.sortableOptions.disabled = true;
+        }
+        localStorage.setItem("orderBy", $scope.filters.orderBy);
+    });
+
+    $scope.$watch('filters.direction', function () {
+        localStorage.setItem("direction", $scope.filters.direction);
+
+    });
+
+    // init date/time errors to false
+    $scope.dueDateError = false;
+    $scope.dueTimeError = false;
+
+    // Date Format: if seperator changed, don't forget to change that in regEx string in validateDate() function too.
+    $scope.dateFormat = 'yyyy-MM-dd';
+    $scope.timeFormat = 'HH:mm';
+
+    // getting subCategory name if present
+    $scope.getSubCatName = function () {
+        return $scope.hasSubCat ? $rootScope.category.subCategories[$stateParams.subCategoryId].name : '';
+    };
+
+    // getting $stateParams.subCategoryId
+    $scope.getSubCatId = function () {
+        return $stateParams.subCategoryId;
+    };
+
+    // define new task object function
+    var emptyNewTask = function () {
+        $scope.newTask = {
+            title: '',
+            description: '',
+            important: false,
+            dueDate: null,
+            done: false,
+            doneDate: null
         };
+        $scope.newTaskDueDate = null;
+        $scope.newTaskDueTime = null;
+    };
 
-        var refreshTotalItems = function () {
-            $scope.paging.totalItems = $scope.filtered.length;
+
+    // define reset editing object function
+    var emptyEditing = function () {
+        $scope.editing = {
+            key: -1,
+            bkpTask: {},
+            error: false
         };
+        $scope.newTaskDueDate = null;
+        $scope.newTaskDueTime = null;
+    };
 
-        $scope.setPage = function (pageNo) {
-            $scope.paging.currentPage = pageNo;
-        };
+    // initialise new task object
+    emptyNewTask();
 
-        $scope.slicedTasks = [];
+    // initialise editing object
+    emptyEditing();
 
-        // define the function for resetting orderBy if filter is set to something other than 'None'
-        var fixOrderBy = function () {
-            if (!$scope.filters.filter == '' && $scope.filters.orderBy == 'doneDate') {
-                $scope.filters.orderBy = 'dueDate';
+    // the function to finalise adding/editing a task
+    $scope.submitTask = function () {
+        if (!$scope.dueDateError && !$scope.dueTimeError) {
+            if ($scope.editing.key !== -1) {  // if editing an item...
+                emptyEditing();
+                $scope.newTask = {};
+            } else {    // if adding a new item...
+                $scope.tasks.push($scope.newTask);
+                refreshTotalItems();
+                emptyNewTask();
+                $scope.focusOn('#newTaskTitle');
             }
+        }
+    };
+
+    // the function for editing a task
+    $scope.editTask = function (key) {
+        var task = $scope.tasks[key];
+        if ($scope.editing.key !== -1) {  // if editing an item...
+            $scope.taskEditCancel();
+        }
+        $scope.editing = {
+            key: angular.copy(key),
+            bkpTask: angular.copy(task),
+            error: false
         };
+        $scope.newTaskDueDate = $filter('date')(task.dueDate, $scope.dateFormat);
+        $scope.newTaskDueTime = $filter('date')(task.dueDate, $scope.timeFormat);
+        $scope.newTask = task;
+        $scope.focusOn('#newTaskTitle');
+    };
 
-        // define set filters function
-        $scope.filterChange = function () {
-            switch ($scope.filters.filter) {
-                case 'undone':
-                    $scope.filters.filters = {done: false};
-                    break;
-                case 'important':
-                    $scope.filters.filters = {important: true, done: false};
-                    break;
-                case 'upcoming':
-                    $scope.filters.filters = {isClose: true, done: false};
-                    break;
-                case 'passed':
-                    $scope.filters.filters = {isPassed: true, done: false};
-                    break;
-                // case 'done':
-                //     $scope.filters.filters = {done: true};
-                //     break;
-                default:
-                    $scope.filters.filters = {};
-                    break;
-            }
-            fixOrderBy();
-        };
-
-        // init filters values
-        $scope.filters = {
-            search: '',
-            filters: {},
-            orderBy: 'dueDate',
-            direction: ''
-        };
-        $scope.filters.filter = 'undone';
-        $scope.filterChange('undone');
-
-        $scope.$watchCollection('filters', function () {
-            $scope.filtered = filterFilter($scope.tasks, $scope.filters.filters);
-            $scope.filtered = filterFilter($scope.filtered, $scope.filters.search);
-            $scope.paging.totalItems = $scope.filtered.length;
-            $scope.currentPage = 1;
-        });
-
-        $scope.$watchCollection('tasks', function () {
-            localStorage.setItem("categories", JSON.stringify($rootScope.categories));
-            console.log("Data Saved!");
-        });
-
-        // init date/time errors to false
+    // the function for canceling a task editing
+    $scope.taskEditCancel = function () {
+        $scope.tasks[$scope.editing.key] = $scope.editing.bkpTask;
+        emptyEditing();
+        $scope.newTask = {};
         $scope.dueDateError = false;
         $scope.dueTimeError = false;
+    };
 
-        // Date Format: if seperator changed, don't forget to change that in regEx string in validateDate() function too.
-        $scope.dateFormat = 'yyyy-MM-dd';
-        $scope.timeFormat = 'HH:mm';
-
-        // getting subCategory name if present
-        $scope.getSubCatName = function () {
-            return $scope.hasSubCat ? $rootScope.category.subCategories[$stateParams.subCategoryId].name : '';
-        };
-
-        // getting $stateParams.subCategoryId
-        $scope.getSubCatId = function () {
-            return $stateParams.subCategoryId;
-        };
-
-        // define new task object function
-        var emptyNewTask = function () {
-            $scope.newTask = {
-                title: '',
-                description: '',
-                important: false,
-                dueDate: null,
-                done: false,
-                doneDate: null
-            };
-            $scope.newTaskDueDate = null;
-            $scope.newTaskDueTime = null;
-        };
-
-
-        // define reset editing object function
-        var emptyEditing = function () {
-            $scope.editing = {
-                key: -1,
-                bkpTask: {},
-                error: false
-            };
-            $scope.newTaskDueDate = null;
-            $scope.newTaskDueTime = null;
-        };
-
-        // initialise new task object
-        emptyNewTask();
-
-        // initialise editing object
-        emptyEditing();
-
-        // the function to finalise adding/editing a task
-        $scope.submitTask = function () {
-            if (!$scope.dueDateError && !$scope.dueTimeError) {
-                if ($scope.editing.key !== -1) {  // if editing an item...
-                    emptyEditing();
-                    $scope.newTask = {};
-                } else {    // if adding a new item...
-                    $scope.tasks.push($scope.newTask);
-                    refreshTotalItems();
-                    emptyNewTask();
-                    $scope.focusOn('#newTaskTitle');
-                }
-            }
-        };
-
-        // the function for editing a task
-        $scope.editTask = function (key) {
-            var task = $scope.tasks[key];
-            if ($scope.editing.key !== -1) {  // if editing an item...
-                $scope.taskEditCancel();
-            }
-            $scope.editing = {
-                key: angular.copy(key),
-                bkpTask: angular.copy(task),
-                error: false
-            };
-            $scope.newTaskDueDate = $filter('date')(task.dueDate, $scope.dateFormat);
-            $scope.newTaskDueTime = $filter('date')(task.dueDate, $scope.timeFormat);
-            $scope.newTask = task;
-            $scope.focusOn('#newTaskTitle');
-        };
-
-        // the function for canceling a task editing
-        $scope.taskEditCancel = function () {
-            $scope.tasks[$scope.editing.key] = $scope.editing.bkpTask;
-            emptyEditing();
-            $scope.newTask = {};
-            $scope.dueDateError = false;
-            $scope.dueTimeError = false;
-        };
-
-        // the function for deleting a task
-        $scope.removeTask = function (key) {
-            if ($scope.editing.key === key) {
-                $scope.editing.error = true;
-            }
-            else {
-                $scope.tasks.splice(key, 1);
-                refreshTotalItems();
-            }
-        };
-
-        var refreshDoneTasks = function () {
-            $rootScope.doneTasks = [];
-
-            angular.forEach($rootScope.categories, function (cat) {
-                if (cat.hasSubCat == true) {
-                    angular.forEach(cat.subCategories, function (subCat) {
-                        angular.forEach(subCat.tasks, function (task) {
-                            if(task.done) {
-                                $rootScope.doneTasks.push(task);
-                            }
-                        });
-                    });
-                }
-                if (cat.hasSubCat == false) {
-                    angular.forEach(cat.tasks, function (directTask) {
-                        if(directTask.done) {
-                            $rootScope.doneTasks.push(directTask);
-                        }
-                    });
-                }
-            });
-        };
-
-        if($rootScope.doneTasks == undefined) {
-            refreshDoneTasks();
-            console.log("INIT DONE TASKS");
+    // the function for deleting a task
+    $scope.removeTask = function (key) {
+        if ($scope.editing.key === key) {
+            $scope.editing.error = true;
         }
+        else {
+            $scope.tasks.splice(key, 1);
+            refreshTotalItems();
+        }
+    };
 
-        // the function for setting task done/undone
-        $scope.taskDone = function (task) {
-            refreshDoneTasks();
-            task.doneDate = task.done ? new Date() : null; // TODO: fix this, convert to a filter (if null, return '--')
-        };
+    // the function for setting task done/undone
+    $scope.taskDone = function (task) {
+        task.doneDate = task.done ? new Date() : null; // TODO: fix this, convert to a filter (if null, return '--')
+        $rootScope.refreshDoneTasks();
+    };
 
-        // define the function for parsing date with regEx
-        var parseDate = function (date) {
-            var parts = date.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
-            if (parts) {
-                return new Date(
-                    parseInt(parts[1], 10),
-                    parseInt(parts[2], 10) - 1,
-                    parseInt(parts[3], 10)
-                );
-            }
-            return null;
-        };
+    // define the function for parsing date with regEx
+    var parseDate = function (date) {
+        var parts = date.match(/^(\d{1,4})-(\d{1,2})-(\d{1,2})$/);
+        if (parts) {
+            return new Date(
+                parseInt(parts[1], 10),
+                parseInt(parts[2], 10) - 1,
+                parseInt(parts[3], 10)
+            );
+        }
+        return null;
+    };
 
-        // define the function for checking entered date validation
-        $scope.validateDate = function (date) {
-            if (!date) {
-                date = $scope.newTaskDueDate;
-            }
-            if (date === '') {
-                $scope.dueDateError = false;
-                return true;
-            }
-            $scope.newTask.dueDate = parseDate(date);
-            if ($scope.newTask.dueDate) {
-                $scope.dueDateError = false;
-                return true;
-            }
-            else {
-                $scope.dueDateError = true;
-                return false;
-            }
-        };
+    // define the function for checking entered date validation
+    $scope.validateDate = function (date) {
+        if (!date) {
+            date = $scope.newTaskDueDate;
+        }
+        if (date === '') {
+            $scope.dueDateError = false;
+            return true;
+        }
+        $scope.newTask.dueDate = parseDate(date);
+        if ($scope.newTask.dueDate) {
+            $scope.dueDateError = false;
+            return true;
+        }
+        else {
+            $scope.dueDateError = true;
+            return false;
+        }
+    };
 
-        // define the function for checking entered time validation
-        $scope.validateTime = function (time) {
-            if (!time) {
-                time = $scope.newTaskDueTime;
-            }
-            if (time === '') {
-                $scope.dueTimeError = false;
-                return true;
-            }
-            var parts = time.match(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/);
-            if (parts) {
-                var hours = parseInt(parts[1]);
-                var minutes = parseInt(parts[2]);
-                ($scope.newTask.dueDate).setHours(hours);
-                ($scope.newTask.dueDate).setMinutes(minutes);
-                $scope.dueTimeError = false;
-                return true;
-            }
-            else {
-                $scope.dueTimeError = true;
-                return false;
-            }
-        };
+    // define the function for checking entered time validation
+    $scope.validateTime = function (time) {
+        if (!time) {
+            time = $scope.newTaskDueTime;
+        }
+        if (time === '') {
+            $scope.dueTimeError = false;
+            return true;
+        }
+        var parts = time.match(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/);
+        if (parts) {
+            var hours = parseInt(parts[1]);
+            var minutes = parseInt(parts[2]);
+            ($scope.newTask.dueDate).setHours(hours);
+            ($scope.newTask.dueDate).setMinutes(minutes);
+            $scope.dueTimeError = false;
+            return true;
+        }
+        else {
+            $scope.dueTimeError = true;
+            return false;
+        }
+    };
 
-        // define the function for checking if deadline has passed
-        $scope.deadlinePassed = function (task) {
-            if (!task.dueDate) { // if dueDate is not set, deadline would never be passed
-                return false;
-            }
-            return (new Date(task.dueDate) < (new Date())); // check if deadline passed, then return
-        };
+    // define the function for checking if deadline has passed
+    $scope.deadlinePassed = function (task) {
+        if (!task.dueDate) { // if dueDate is not set, deadline would never be passed
+            return false;
+        }
+        return (new Date(task.dueDate) < (new Date())); // check if deadline passed, then return
+    };
 
-        // define the function for checking if deadline is close (less than 24 hours)
-        $scope.deadlineClose = function (task) {
-            var now = new Date();
-            var due = new Date(task.dueDate);
-            var diff = due - now;
-            return (diff < 8.64e+7 && diff >= 0); // 24 hours in milliseconds: 8.64e+7
-        };
+    // define the function for checking if deadline is close (less than 24 hours)
+    $scope.deadlineClose = function (task) {
+        var now = new Date();
+        var due = new Date(task.dueDate);
+        var diff = due - now;
+        return (diff < 8.64e+7 && diff >= 0); // 24 hours in milliseconds: 8.64e+7
+    };
 
-        // add isClose and isPassed to 'task'
-        var calculateTaskStatus = function (task) {
-            task.isClose = $scope.deadlineClose(task);
-            task.isPassed = $scope.deadlinePassed(task);
-        };
+    // add isClose and isPassed to 'task'
+    var calculateTaskStatus = function (task) {
+        task.isClose = $scope.deadlineClose(task);
+        task.isPassed = $scope.deadlinePassed(task);
+    };
 
-        // add/refresh isClose and isPassed for all tasks
-        angular.forEach($scope.tasks, function (task, key) {
-            calculateTaskStatus(task);
-        });
+    // add/refresh isClose and isPassed for all tasks
+    angular.forEach($scope.tasks, function (task, key) {
+        calculateTaskStatus(task);
+    });
 
-    }
-])
-;
+}]);

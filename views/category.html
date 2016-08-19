@@ -14,14 +14,15 @@
             </div>
         </form>
         <br>
-        <div class="list-group cat-list" ng-show="categories[0]">
-            <a class="list-group-item" ui-sref="category.categoryId({categoryId: categories.indexOf(category)})"
-               ng-class="{'active': isActive(categories.indexOf(category))}"
-               ng-repeat="category in categories">
+        <div class="list-group cat-list clearfix" ng-show="categories[0]" ui-sortable="sortableOptions" ng-model="categories">
+            <a ng-repeat="category in categories" class="list-group-item"
+               ui-sref="category.categoryId({categoryId: categories.indexOf(category)})"
+               ng-class="{'active': isActive(categories.indexOf(category))}">
                 <span class="badge">{{countItems(category)}}</span>
-                {{category.name}}
+                <span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;{{category.name}}
             </a>
         </div>
+        <div class="clearfix"></div>
         <div class="well text-center" ng-hide="categories[0]">
             <h5>No categories!</h5>
             <!--<h6>Add a new Category.</h6>-->

@@ -1,4 +1,4 @@
-var app = angular.module('todoListApp', ['ui.router', 'ui.bootstrap']);
+var app = angular.module('todoListApp', ['ui.router', 'ui.bootstrap', 'ui.sortable']);
 
 app.filter('startFrom', function () {
     return function (input, start) {
@@ -55,7 +55,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
         })
 
         .state('delete.subCat', {
-            url: '/sub/:catId/:subId',
+            url: '/sub/:catId/:subId?from',
             templateUrl: 'views/delete.html',
             controller: 'DeleteSubCatCtrl'
         })
@@ -125,15 +125,38 @@ app.controller('MainCtrl', ['$rootScope', function ($rootScope) {
         }
     ];
 
+
     if (localStorage.categories) {
         $rootScope.categories = JSON.parse(localStorage.getItem("categories"));
         console.log("Data Loaded!");
     }
 
-    $rootScope.$watchCollection('categories', function () {
+    $rootScope.refreshDoneTasks = function () {
+        $rootScope.doneTasks = [];
+
+        angular.forEach($rootScope.categories, function (cat) {
+            if (cat.hasSubCat == true) {
+                angular.forEach(cat.subCategories, function (subCat) {
+                    angular.forEach(subCat.tasks, function (task) {
+                        if(task.done) {
+                            $rootScope.doneTasks.push(task);
+                        }
+                    });
+                });
+            }
+            if (cat.hasSubCat == false) {
+                angular.forEach(cat.tasks, function (directTask) {
+                    if(directTask.done) {
+                        $rootScope.doneTasks.push(directTask);
+                    }
+                });
+            }
+        });
+    };
+    $rootScope.refreshDoneTasks();
+
+    $rootScope.$watch('categories', function () {
         localStorage.setItem("categories", JSON.stringify($rootScope.categories));
-        console.log("Data Saved!");
-    });
-
-
+        // console.log("Data Saved!");
+    }, true);
 }]);
