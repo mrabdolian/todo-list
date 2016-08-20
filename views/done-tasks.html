@@ -1,49 +1,91 @@
 <div class="row well big-well tasks-header-well">
-    <h3 class="title">Done Tasks</h3>
+    <h3 class="title">Done Tasks <span class="badge badge-tasks">{{doneTasks.length}}</span></h3>
     <p class="gray">The tasks you've already done.</p><br>
-    <!-- Delete All button -->
+    <a class="btn btn-danger main-top-btn-done clearfix" ng-click="removeAll()">
+        Delete All
+    </a>
     <!-- Filters and paging option -->
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="searchInput">Search:</label>
+                <input class="form-control input-sm" name="searchInput" id="searchInput" ng-model="search"
+                       placeholder="Search by everything" type="text">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="orderBySelect">Order by:</label>
+                <select class="form-control input-sm" name="orderBySelect" id="orderBySelect"
+                        ng-model="orderBy">
+                    <option value="doneDate">Done Date</option>
+                    <option value="dueDate">Due Date</option>
+                    <option value="title">Task Title</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="directionSelect">Direction:</label>
+                <select class="form-control input-sm" name="directionSelect" id="directionSelect"
+                        ng-model="direction">
+                    <option value="">Ascending</option>
+                    <option value="reverse">Descending</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 <br>
 <ul class="list-group tasks-list">
     <li class="list-group-item row task-row-header">
-        <div class="col-sm-1 col-lg-1">
-            <span class="glyphicon glyphicon-move"></span>
-        </div>
-        <div class="col-sm-5 col-lg-7 seperator"><label>Title</label></div>
-        <div class="col-sm-3 col-lg-2 seperator"><label>Due Date</label></div>
+        <div class="col-sm-5 col-lg-4 seperator"><label>Title</label></div>
+        <div class="col-sm-2 col-lg-2 seperator"><label>Source</label></div>
+        <div class="hidden-sm col-lg-2 seperator"><label>Due Date</label></div>
         <div class="col-sm-3 col-lg-2 seperator"><label>Done Date</label></div>
-        <!--<div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>-->
+        <div class="col-sm-2 col-lg-2 seperator"><label>Actions</label></div>
     </li>
     <li class="list-group-item row" ng-hide="doneTasks[0]">
         <div class="col-sm-10 col-sm-offset-1">
             <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
-                <span>No Done Tasks.</span><br>
+                <span>No Tasks Done.</span><br>
                 <!--<p></p>-->
             </h3>
         </div>
     </li>
-    <li class="list-group-item row task-row" ng-repeat="(key, task) in doneTasks | orderBy: doneDate:'reverse'">
+    <li class="list-group-item row task-row"
+        ng-repeat="task in doneTasks | orderBy: orderBy:direction | filter: search">
         <div class="bar-group">
             <div class="bar bar-gold" ng-show="task.important"></div>
             <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
             <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
         </div>
-        <div class="col-sm-1 col-lg-1">
-            <button aria-label="Reorder" class="btn btn-default cursor-move reorder-handle" type="button">
-                <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
-            </button>
-        </div>
-        <div class="col-sm-5 col-lg-7 padding-top-10">
+        <div class="col-sm-5 col-lg-4 padding-top-10">
             <span class="glyphicon glyphicon-star star-done-task" ng-show="task.important"></span>
             <span>{{task.title}}</span>
         </div>
-        <div class="col-sm-3 col-lg-2 seperator padding-top-10"><label>{{task.dueDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
-        <div class="col-sm-3 col-lg-2 seperator padding-top-10"><label>{{task.doneDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
-        <!--<div class="col-sm-3 col-lg-2 seperator">-->
-            <!--<button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeDoneTask(key)">-->
-                <!--<span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>-->
-            <!--</button>-->
-        <!--</div>-->
+        <div class="col-sm-2 col-lg-2 padding-top-10">
+            <a ui-sref="category.categoryId({'categoryId': task.catIndex})">{{categories[task.catIndex].name}}</a>
+            <span ng-if="hasSubCat(task)">&nbsp;/&nbsp;
+            <a ui-sref="category.categoryId.subCategoryId({'categoryId': task.catIndex, 'subCategoryId': task.subCatIndex})">
+                {{categories[task.catIndex].subCategories[task.subCatIndex].name}}
+            </a>
+            </span>
+        </div>
+        <div class="hidden-sm col-lg-2 seperator padding-top-10">
+            <label>{{task.dueDate | date: dateFormat +' '+ timeFormat}}</label>
+        </div>
+        <div class="col-sm-3 col-lg-2 seperator padding-top-10">
+            <label>{{task.doneDate | date: dateFormat +' '+ timeFormat}}</label>
+        </div>
+        <div class="col-sm-2 col-lg-2 seperator">
+            <button aria-label="Details" class="btn btn-default" type="button"
+                    ui-sref="category.categoryId.subCategoryId.taskId({'categoryId': task.catIndex, 'subCategoryId': task.subCatIndex, 'taskId': task.taskIndex})">
+                <span aria-hidden="true" class="glyphicon glyphicon-option-horizontal text-primary"></span>
+            </button>
+            <button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeDoneTask(task)">
+                <span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>
+            </button>
+        </div>
     </li>
 </ul>

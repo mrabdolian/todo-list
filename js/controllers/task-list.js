@@ -1,4 +1,4 @@
-app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter', function ($rootScope, $scope, $stateParams, $filter) {
+app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter', '$state', function ($rootScope, $scope, $stateParams, $filter, $state) {
 
     $scope.hasSubCat = null;
 
@@ -24,10 +24,6 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         'ui-floating': true,
         handle: '.reorder-handle',
         disabled: true
-    };
-
-    var refreshTotalItems = function () {
-        $scope.totalItems = $scope.filtered.length;
     };
 
     $scope.setPage = function (pageNo) {
@@ -92,14 +88,17 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     };
 
     $scope.$watchCollection('filters', function () {
+        console.log('filters $watch triggered');
         updateFiltered();
     });
 
     $scope.$watch('tasks', function () {
+        console.log('tasks $watch triggered');
         updateFiltered();
     }, true);
 
     $scope.$watch('itemsPerPage', function () {
+        console.log('itemsPerPage $watch triggered');
         if ($scope.itemsPerPage == 'noLimit') {
             $scope.filtered = $filter('filter')($scope.tasks, $scope.filters.filters);
             $scope.filtered = $filter('filter')($scope.filtered, $scope.filters.search);
@@ -114,15 +113,15 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     });
 
     $scope.$watch('currentPage', function () {
+        console.log('currentPage $watch triggered');
         updateFiltered();
     });
 
-    if (localStorage.itemsPerPage) {
-        $scope.itemsPerPage = localStorage.getItem("itemsPerPage");
-    }
+    // load data from localStorage if available ///////////////////////////////
     if (localStorage.direction) {
         $scope.filters.direction = localStorage.getItem("direction");
     }
+
     if (localStorage.orderBy) {
         var orderBy = localStorage.getItem("orderBy");
         if (orderBy == 'custom') {
@@ -132,17 +131,20 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
         $scope.filters.orderBy = orderBy;
     }
 
+    if (!localStorage.itemsPerPage) {
+        localStorage.setItem("itemsPerPage", 5);
+    }
+    $scope.itemsPerPage = localStorage.getItem("itemsPerPage");
+    ///////////////////////////////////////////////////////////////////////////
+
     $scope.$watch('filters.orderBy', function () {
-        if ($scope.filters.orderBy == 'custom') {
-            $scope.sortableOptions.disabled = false;
-        }
-        else {
-            $scope.sortableOptions.disabled = true;
-        }
+        console.log('filters.orderBy $watch triggered');
+        $scope.sortableOptions.disabled = ($scope.filters.orderBy != 'custom');
         localStorage.setItem("orderBy", $scope.filters.orderBy);
     });
 
     $scope.$watch('filters.direction', function () {
+        console.log('filters.direction $watch triggered');
         localStorage.setItem("direction", $scope.filters.direction);
 
     });
@@ -150,10 +152,6 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     // init date/time errors to false
     $scope.dueDateError = false;
     $scope.dueTimeError = false;
-
-    // Date Format: if seperator changed, don't forget to change that in regEx string in validateDate() function too.
-    $scope.dateFormat = 'yyyy-MM-dd';
-    $scope.timeFormat = 'HH:mm';
 
     // getting subCategory name if present
     $scope.getSubCatName = function () {
@@ -163,6 +161,16 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     // getting $stateParams.subCategoryId
     $scope.getSubCatId = function () {
         return $stateParams.subCategoryId;
+    };
+
+    // the function for checking if the state is changed to hide tasks and show task details
+    $scope.stateIs = function (state) {
+        return $state.is(state);
+    };
+
+    // getting a task id
+    $scope.getTaskId = function (task) {
+        return $scope.tasks.indexOf(task);
     };
 
     // define new task object function
@@ -200,12 +208,13 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     // the function to finalise adding/editing a task
     $scope.submitTask = function () {
         if (!$scope.dueDateError && !$scope.dueTimeError) {
+
             if ($scope.editing.key !== -1) {  // if editing an item...
                 emptyEditing();
                 $scope.newTask = {};
-            } else {    // if adding a new item...
+
+            } else {  // if adding a new item...
                 $scope.tasks.push($scope.newTask);
-                refreshTotalItems();
                 emptyNewTask();
                 $scope.focusOn('#newTaskTitle');
             }
@@ -213,7 +222,11 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     };
 
     // the function for editing a task
-    $scope.editTask = function (key) {
+    $scope.editTask = function (task) {
+
+        // get the key in main array ($scope.tasks)
+        var key = $scope.tasks.indexOf(task);
+
         var task = $scope.tasks[key];
         if ($scope.editing.key !== -1) {  // if editing an item...
             $scope.taskEditCancel();
@@ -239,13 +252,16 @@ app.controller('TaskListCtrl', ['$rootScope', '$scope', '$stateParams', '$filter
     };
 
     // the function for deleting a task
-    $scope.removeTask = function (key) {
-        if ($scope.editing.key === key) {
+    $scope.removeTask = function (task) {
+
+        // get the key in main array ($scope.tasks)
+        var key = $scope.tasks.indexOf(task);
+
+        if ($scope.editing.key == key) {
             $scope.editing.error = true;
         }
         else {
             $scope.tasks.splice(key, 1);
-            refreshTotalItems();
         }
     };
 

@@ -1,220 +1,233 @@
-<div class="row well big-well tasks-header-well">
-    <h3 class="title">Tasks <span class="badge badge-tasks">{{tasks.length}}</span></h3>
-    <p class="gray">{{category.name}} / {{getSubCatName()}}</p>
-    <a class="btn btn-danger delete-category clearfix" ui-sref="delete.cat({'catId': activeState})"
-       ng-hide="hasSubCat">
-        Delete Category
-    </a>
-    <a class="btn btn-danger delete-category clearfix"
-       ui-sref="delete.subCat({'catId': activeState, 'subId': getSubCatId(), 'from': 'tasks'})"
-       ng-show="hasSubCat">
-        Delete SubCategory
-    </a>
-    <form class="padding-top-10" name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle"
-                           ng-model="newTask.title"
-                           type="text" placeholder="+ New Task">
+<div ng-show="stateIs('category.categoryId.subCategoryId')">
+    <div class="row well big-well tasks-header-well">
+        <h3 class="title">Tasks <span class="badge badge-tasks">{{tasks.length}}</span></h3>
+        <p class="gray">{{category.name}} / {{getSubCatName()}}</p>
+        <a class="btn btn-danger main-top-btn clearfix" ui-sref="delete.cat({'catId': activeState})"
+           ng-hide="hasSubCat">
+            <span class="glyphicon glyphicon-trash"></span>
+            Delete Category
+        </a>
+        <a class="btn btn-danger main-top-btn clearfix"
+           ui-sref="delete.subCat({'catId': activeState, 'subId': getSubCatId(), 'from': 'tasks'})"
+           ng-show="hasSubCat">
+            <span class="glyphicon glyphicon-trash"></span>
+            Delete SubCategory
+        </a>
+        <form class="padding-top-10" name="addTaskForm" id="addTaskForm" ng-submit="submitTask()" novalidate>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <input id="newTaskTitle" class="form-control form-inline" name="newTaskTitle"
+                               ng-model="newTask.title"
+                               type="text" placeholder="+ New Task">
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3" ng-show="newTask.title">
-                <div class="form-group">
-                    <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime"
-                           placeholder="Due Date ({{dateFormat}})" ng-change="validateDate()">
+                <div class="col-sm-3" ng-show="newTask.title">
+                    <div class="form-group">
+                        <input class="form-control form-inline" ng-model="newTaskDueDate" type="datetime"
+                               placeholder="Due Date ({{dateFormat}})" ng-change="validateDate()">
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3" ng-show="newTask.title">
-                <div class="form-group">
-                    <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime"
-                           placeholder="Due Time ({{timeFormat}})" ng-change="validateTime()"
-                           ng-disabled="!newTask.dueDate">
+                <div class="col-sm-3" ng-show="newTask.title">
+                    <div class="form-group">
+                        <input class="form-control form-inline" ng-model="newTaskDueTime" type="datetime"
+                               placeholder="Due Time ({{timeFormat}})" ng-change="validateTime()"
+                               ng-disabled="!newTask.dueDate">
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-2" ng-show="newTask.title">
-                <div class="form-group inline">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" ng-model="newTask.important">Important?
-                        </label>
+                <div class="col-sm-2" ng-show="newTask.title">
+                    <div class="form-group inline">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="newTask.important">Important?
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row" ng-show="newTask.title || editing.key>-1">
-            <div class="col-sm-10">
-                <div class="form-group">
-                    <input class="form-control" ng-model="newTask.description" type="text"
-                           placeholder="Task Description...">
+            <div class="row" ng-show="newTask.title || editing.key>-1">
+                <div class="col-sm-10">
+                    <div class="form-group">
+                        <input class="form-control" ng-model="newTask.description" type="text"
+                               placeholder="Task Description...">
+                    </div>
+                </div>
+                <div class="col-sm-2" ng-hide="editing.key>-1">
+                    <div class="form-group">
+                        <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError && dueTimeError"
+                                type="submit">
+                            &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-2" ng-show="editing.key>-1">
+                    <div class="form-group">
+                        <button class="btn btn-danger" type="button" ng-click="taskEditCancel()">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <button class="btn btn-success" ng-disabled="!newTask.title && dueDateError && dueTimeError"
+                                type="submit">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-2" ng-hide="editing.key>-1">
-                <div class="form-group">
-                    <button class="btn btn-primary" ng-disabled="!newTask.title && dueDateError && dueTimeError"
-                            type="submit">
-                        &nbsp;&nbsp;&nbsp;&nbsp; + &nbsp;&nbsp;&nbsp;&nbsp;
-                    </button>
+            <div class="new-task-errors" ng-show="editing.error || dueDateError || dueTimeError">
+                <div class="text-danger" ng-show="editing.error">
+                    The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and
+                    try
+                    again.
+                </div>
+                <div class="text-danger" ng-show="dueDateError">
+                    Due Date is not in valid format. Please use '{{dateFormat}}'
+                </div>
+                <div class="text-danger" ng-show="dueTimeError">
+                    Due Time is not in valid format. Please use '{{timeFormat}}'
                 </div>
             </div>
-            <div class="col-sm-2" ng-show="editing.key>-1">
+        </form>
+        <!-- Filters and paging option -->
+        <div class="row">
+            <div class="col-sm-4">
                 <div class="form-group">
-                    <button class="btn btn-danger" type="button" ng-click="taskEditCancel()">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                    <button class="btn btn-success" ng-disabled="!newTask.title && dueDateError && dueTimeError"
-                            type="submit">
-                        <span class="glyphicon glyphicon-ok"></span>
-                    </button>
+                    <label for="searchInput">Search:</label>
+                    <input class="form-control input-sm" name="searchInput" id="searchInput" ng-model="filters.search"
+                           placeholder="Search by everything" type="text">
                 </div>
             </div>
-        </div>
-        <div class="new-task-errors" ng-show="editing.error || dueDateError || dueTimeError">
-            <div class="text-danger" ng-show="editing.error">
-                The item you're trying to remove is under editing. Please <b>Cancel</b> or <b>Save</b> the changes and
-                try
-                again.
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="filterSelect">Filter:</label>
+                    <select class="form-control input-sm" name="filterSelect" id="filterSelect" ng-model="filters.filter"
+                            ng-change="filterChange()">
+                        <option value="">None (All Tasks)</option>
+                        <option value="undone">Undone</option>
+                        <option value="important">Important</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="passed">Deadline Passed</option>
+                    </select>
+                </div>
             </div>
-            <div class="text-danger" ng-show="dueDateError">
-                Due Date is not in valid format. Please use '{{dateFormat}}'
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="orderBySelect">Order by:</label>
+                    <select class="form-control input-sm" name="orderBySelect" id="orderBySelect"
+                            ng-model="filters.orderBy">
+                        <!--<option value="">None (Added Date)</option>-->
+                        <option value="custom" ng-disabled="isAnyFilterActive()">Custom Order</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="doneDate" ng-disabled="isAnyFilterActive()">Done Date</option>
+                        <option value="title">Task Title</option>
+                    </select>
+                </div>
             </div>
-            <div class="text-danger" ng-show="dueTimeError">
-                Due Time is not in valid format. Please use '{{timeFormat}}'
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="directionSelect">Direction:</label>
+                    <select class="form-control input-sm" name="directionSelect" id="directionSelect"
+                            ng-model="filters.direction">
+                        <option value="">Ascending</option>
+                        <option value="reverse">Descending</option>
+                    </select>
+                </div>
             </div>
-        </div>
-    </form>
-    <!-- Filters and paging option -->
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="searchInput">Search:</label>
-                <input class="form-control input-sm" name="searchInput" id="searchInput" ng-model="filters.search"
-                       placeholder="Search by everything" type="text">
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="filterSelect">Filter:</label>
-                <select class="form-control input-sm" name="filterSelect" id="filterSelect" ng-model="filters.filter"
-                        ng-change="filterChange()">
-                    <option value="">None (All Tasks)</option>
-                    <option value="undone">Undone</option>
-                    <option value="important">Important</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="passed">Deadline Passed</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="orderBySelect">Order by:</label>
-                <select class="form-control input-sm" name="orderBySelect" id="orderBySelect"
-                        ng-model="filters.orderBy">
-                    <option value="">None (Added Date)</option>
-                    <option value="dueDate">Due Date</option>
-                    <option value="doneDate" ng-disabled="isAnyFilterActive()">Done Date</option>
-                    <option value="title">Task Title</option>
-                    <option value="custom" ng-disabled="isAnyFilterActive()">Custom Order</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="directionSelect">Direction:</label>
-                <select class="form-control input-sm" name="directionSelect" id="directionSelect"
-                        ng-model="filters.direction">
-                    <option value="">Ascending</option>
-                    <option value="reverse">Descending</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="itemsPerPageSelect">Items Per Page:</label>
-                <select name="itemsPerPageSelect" id="itemsPerPageSelect" class="form-control input-sm"
-                        ng-model="itemsPerPage">
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="noLimit">No Limit</option>
-                </select>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="itemsPerPageSelect">Items Per Page:</label>
+                    <select name="itemsPerPageSelect" id="itemsPerPageSelect" class="form-control input-sm"
+                            ng-model="itemsPerPage">
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="noLimit">No Limit</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<br>
-<ul class="list-group tasks-list" ui-sortable="sortableOptions" ng-model="tasks">
-    <li class="list-group-item row task-row-header">
-        <div class="col-sm-1 col-lg-1">
-            <span class="glyphicon glyphicon-move"></span>
-        </div>
-        <div class="col-sm-4 col-lg-5 seperator"><label>Title</label></div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>Due Date</label></div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>Done Date</label></div>
-        <div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>
-    </li>
-    <li class="list-group-item row" ng-hide="tasks[0]">
-        <div class="col-sm-10 col-sm-offset-1">
-            <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
-                <span>Nothing yet!</span><br>
-                <p>Start scheduling!</p>
-                <button class="btn btn-warning" type="button" ng-click="focusOn('#newTaskTitle')">Add new task</button>
-            </h3>
-        </div>
-    </li>
-    <li class="list-group-item row" ng-hide="filtered[0] || !tasks[0]">
-        <div class="col-sm-10 col-sm-offset-1">
-            <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
-                <span>No tasks...</span><br>
-                <p> matched your filters!</p>
-            </h3>
-        </div>
-    </li>
-    <li class="list-group-item row task-row" ng-class="{'done': task.done}"
-        ng-repeat="(key, task) in filtered">
-        <div class="bar-group" ng-hide="task.done">
-            <div class="bar bar-gold" ng-show="task.important"></div>
-            <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
-            <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
-        </div>
-        <div class="col-sm-1 col-lg-1">
-            <a aria-label="Reorder" class="btn btn-default reorder-handle reorder-handle-cursor"
-               ng-class="{'default-cursor': sortableOptions.disabled}"
-               disabled="disabled">
-                <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
-            </a>
-        </div>
-        <div class="col-sm-4 col-lg-5">
-            <span class="glyphicon glyphicon-star star-task" ng-show="task.important"></span>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="task.done" ng-change="taskDone(task)">
-                    <span ng-class="{'star-task-title': task.important}">{{task.title}}</span>
-                </label>
+    <br>
+    <ul class="list-group tasks-list" ui-sortable="sortableOptions" ng-model="tasks">
+        <li class="list-group-item row task-row-header">
+            <div class="col-sm-1 col-lg-1">
+                <span class="glyphicon glyphicon-move"></span>
             </div>
-        </div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.dueDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
-        <div class="col-sm-2 col-lg-2 seperator"><label>{{task.doneDate | date: 'yyyy-MM-dd HH:mm'}}</label></div>
-        <div class="col-sm-3 col-lg-2 seperator">
-            <button aria-label="Edit" class="btn btn-default" type="button" ng-click="editTask(key)"
-                    ng-disabled="task.done">
-                <span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>
-            </button>
-            <button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeTask(key)"
-                    ng-disabled="task.done">
-                <span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>
-            </button>
-        </div>
-    </li>
-</ul>
-<div class="text-center">
-    <ul uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize"
-        class="pagination" boundary-link-numbers="true" num-pages="numOfPages"
-        items-per-page="itemsPerPage"></ul>
-    <pre>Page: {{currentPage}} / {{numOfPages}}</pre>
+            <div class="col-sm-4 col-lg-5 seperator"><label>Title</label></div>
+            <div class="col-sm-2 col-lg-2 seperator"><label>Due Date</label></div>
+            <div class="col-sm-2 col-lg-2 seperator"><label>Done Date</label></div>
+            <div class="col-sm-3 col-lg-2 seperator"><label>Actions</label></div>
+        </li>
+        <li class="list-group-item row" ng-hide="tasks[0]">
+            <div class="col-sm-10 col-sm-offset-1">
+                <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
+                    <span>Nothing yet!</span><br>
+                    <p>Start scheduling!</p>
+                    <button class="btn btn-warning" type="button" ng-click="focusOn('#newTaskTitle')">Add new task</button>
+                </h3>
+            </div>
+        </li>
+        <li class="list-group-item row" ng-hide="filtered[0] || !tasks[0]">
+            <div class="col-sm-10 col-sm-offset-1">
+                <h3 class="big-well padding-bottom-10 padding-top-10 text-center empty-task-text">
+                    <span>No tasks...</span><br>
+                    <p> matched your filters!</p>
+                </h3>
+            </div>
+        </li>
+        <li class="list-group-item row task-row" ng-class="{'done': task.done}" ng-repeat="task in filtered">
+            <div class="bar-group" ng-hide="task.done">
+                <div class="bar bar-gold" ng-show="task.important"></div>
+                <div class="bar bar-orange" ng-show="deadlineClose(task)"></div>
+                <div class="bar bar-red" ng-show="deadlinePassed(task)"></div>
+            </div>
+            <div class="col-sm-1 col-lg-1">
+                <a aria-label="Reorder" class="btn btn-default reorder-handle reorder-handle-cursor"
+                   ng-class="{'default-cursor': sortableOptions.disabled}"
+                   disabled="disabled">
+                    <span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger gray"></span>
+                </a>
+            </div>
+            <div class="col-sm-4 col-lg-5">
+                <span class="glyphicon glyphicon-star star-task" ng-show="task.important"></span>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="task.done" ng-change="taskDone(task)">
+                        <span ng-class="{'star-task-title': task.important}">{{task.title}}</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-2 col-lg-2 seperator"><label>{{task.dueDate | date: dateFormat +' '+ timeFormat}}</label></div>
+            <div class="col-sm-2 col-lg-2 seperator"><label>{{task.doneDate | date: dateFormat +' '+ timeFormat}}</label></div>
+            <div class="col-sm-3 col-lg-2 seperator">
+                <a class="btn btn-danger main-top-btn clearfix"
+                   ui-sref="delete.subCat({'catId': activeState, 'subId': getSubCatId(), 'from': 'tasks'})"
+                   ng-show="hasSubCat">
+                    Delete SubCategory
+                </a>
+                <button aria-label="Details" class="btn btn-default" type="button"
+                        ui-sref="category.categoryId.subCategoryId.taskId({'taskId': getTaskId(task)})">
+                    <span aria-hidden="true" class="glyphicon glyphicon-option-horizontal text-primary"></span>
+                </button>
+                <button aria-label="Edit" class="btn btn-default" type="button" ng-click="editTask(task)"
+                        ng-disabled="task.done">
+                    <span aria-hidden="true" class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <button aria-label="Remove" class="btn btn-default" type="button" ng-click="removeTask(task)"
+                        ng-disabled="task.done">
+                    <span aria-hidden="true" class="glyphicon glyphicon-trash text-danger"></span>
+                </button>
+            </div>
+        </li>
+    </ul>
+    <div class="text-center">
+        <ul uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize"
+            class="pagination" boundary-link-numbers="true" num-pages="numOfPages"
+            items-per-page="itemsPerPage"></ul>
+        <!--<pre>Page: {{currentPage}} / {{numOfPages}}</pre>-->
+    </div>
 </div>
+<div ui-view></div>

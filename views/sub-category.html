@@ -2,18 +2,36 @@
     <div class="well">
         <h3 class="title">SubCategories</h3>
         <p class="gray">{{category.name}}/</p>
-        <a class="btn btn-danger delete-category clearfix" ui-sref="delete.cat({'catId': activeState})">
+        <a class="btn btn-danger main-top-btn clearfix" ui-sref="delete.cat({'catId': activeState})">
+            <span class="glyphicon glyphicon-trash"></span>
             Delete Category
         </a>
-        <form class="padding-top-20 padding-bottom-30" name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
-            <div class="row clearfix">
-                <input class="form-control add-input" ng-model="newSubCategory" type="text"
-                       id="addSubCategoryInput" placeholder="New SubCategory">
-                <button class="btn btn-default add-btn" ng-disabled="!newSubCategory" type="submit">
-                    +
-                </button>
+        <hr>
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <form class="padding-top-20 padding-bottom-30" name="addSubCategoryForm" ng-submit="addSubCategory()" novalidate>
+                    <div class="row clearfix">
+                        <input class="form-control add-input" ng-model="newSubCategory" type="text"
+                               id="addSubCategoryInput" placeholder="New SubCategory">
+                        <button class="btn btn-default add-btn" ng-disabled="!newSubCategory" type="submit">
+                            +
+                        </button>
+                    </div>
+                </form>
+                <div ui-sortable="sortableOptions" ng-model="category.subCategories">
+                    <div class="row list-group subcat-list clearfix" ng-show="categories[0]" ng-repeat="(key, subCat) in category.subCategories">
+                        <a class="list-group-item list-item-lg-left add-input"
+                           ui-sref="category.categoryId.subCategoryId({subCategoryId: key})">
+                            <span class="badge">{{countItems(subCat)}}</span>
+                            <span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;{{subCat.name}}
+                        </a>
+                        <a class="list-group-item list-item-sm-right" ui-sref="delete.subCat({'catId': activeState,'subId': key, 'from': 'subCat'})">
+                            <span class="glyphicon glyphicon-trash text-danger"></span>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
         <div class="big-well padding-bottom-20 padding-top-10 lightgray" ng-hide="category.subCategories[0]">
             <span>Create your first SubCategory in this Category!</span>
             <p></p>
@@ -21,18 +39,6 @@
             <button class="btn btn-success" type="button" ng-click="focusOn('#addSubCategoryInput')">
                 Add First SubCategory
             </button>
-        </div>
-        <div ui-sortable="sortableOptions" ng-model="category.subCategories">
-            <div class="row list-group subcat-list clearfix" ng-show="categories[0]" ng-repeat="(key, subCat) in category.subCategories">
-                <a class="list-group-item list-item-lg-left add-input"
-                   ui-sref="category.categoryId.subCategoryId({subCategoryId: key})">
-                    <span class="badge">{{countItems(subCat)}}</span>
-                    <span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;{{subCat.name}}
-                </a>
-                <a class="list-group-item list-item-sm-right" ui-sref="delete.subCat({'catId': activeState,'subId': key, 'from': 'subCat'})">
-                    <span class="glyphicon glyphicon-trash text-danger"></span>
-                </a>
-            </div>
         </div>
     </div>
 </div>

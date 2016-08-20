@@ -113,18 +113,18 @@ body {
 
 .reorder-handle-cursor {
     cursor: move;
-    cursor: -webkit-grab!important;
-    cursor: -moz-grab!important;
+    cursor: -webkit-grab !important;
+    cursor: -moz-grab !important;
 }
 
 .reorder-handle-cursor:active {
     cursor: move;
-    cursor: -webkit-grabbing!important;
-    cursor: -moz-grabbing!important;
+    cursor: -webkit-grabbing !important;
+    cursor: -moz-grabbing !important;
 }
 
 .default-cursor, .default-cursor:active {
-    cursor: default!important;
+    cursor: default !important;
 }
 
 .bar-group {
@@ -165,10 +165,14 @@ body {
     color: #ca0000;
 }
 
-.delete-category {
+.main-top-btn {
     margin-top: -51px;
     float: right;
+}
 
+.main-top-btn-done {
+    margin-top: -71px;
+    float: right;
 }
 
 .add-btn {
@@ -364,6 +368,9 @@ body {
 
 .main-footer a {
     transition: color 0.4s ease-out;
+    -o-transition: color 0.4s ease-out;
+    -moz-transition: color 0.4s ease-out;
+    -webkit-transition: color 0.4s ease-out;
 }
 
 .main-footer a:hover, .main-footer a:active {
@@ -391,8 +398,49 @@ body {
 }
 
 .badge-tasks {
-    font-weight: normal!important;
+    font-weight: normal !important;
     margin-top: -3px;
     font-size: 15px;
     background-color: #AAA;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.no-margin-top {
+    margin-top: 0;
+}
+
+.badge-for-sub {
+    font-weight: 200;
+    font-size: 11px;
+}
+
+.gold {
+    color: gold;
+}
+
+.orange {
+    color: orange;
+}
+
+.red {
+    color: red;
+}
+
+.notification {
+    opacity: 0.95;
+    position: fixed;
+    width: 500px;
+    top: 20px;
+    z-index: 99999;
+    transition: opacity 0.5s ease-out;
+    -o-transition: opacity 0.5s ease-out;
+    -moz-transition: opacity 0.5s ease-out;
+    -webkit-transition: opacity 0.5s ease-out;
+}
+
+.fade-out {
+    opacity: 0;
 }

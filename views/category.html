@@ -1,6 +1,5 @@
 <div class="row">
     <div class="col-sm-3 sidebar">
-
         <a class="no-decoration black-anchor" ui-sref="category">
             <h3>Categories</h3><br>
         </a>
@@ -14,11 +13,12 @@
             </div>
         </form>
         <br>
-        <div class="list-group cat-list clearfix" ng-show="categories[0]" ui-sortable="sortableOptions" ng-model="categories">
+        <div class="list-group cat-list clearfix" ng-show="categories[0]" ui-sortable="sortableOptions"
+             ng-model="categories">
             <a ng-repeat="category in categories" class="list-group-item"
                ui-sref="category.categoryId({categoryId: categories.indexOf(category)})"
                ng-class="{'active': isActive(categories.indexOf(category))}">
-                <span class="badge">{{countItems(category)}}</span>
+                <span class="badge">{{countItems(category)}}<span class="badge-for-sub" ng-if="category.hasSubCat">&nbsp;Sub</span></span>
                 <span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;{{category.name}}
             </a>
         </div>
@@ -31,7 +31,7 @@
         <div class="list-group cat-list-done">
             <a class="list-group-item" ui-sref="category.doneTasks" ng-class="{'active': isActive('doneTasks')}">
                 <span class="badge">{{doneTasks.length}}</span>
-                Done Tasks
+                <span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Done Tasks
             </a>
         </div>
 

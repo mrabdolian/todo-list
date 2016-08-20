@@ -36,6 +36,12 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             controller: 'TaskListCtrl'
         })
 
+        .state('category.categoryId.subCategoryId.taskId', {
+            url: '/task/:taskId',
+            templateUrl: 'views/details.html',
+            controller: 'TaskDetailsCtrl'
+        })
+
         .state('category.doneTasks', {
             url: '^/doneTasks',
             templateUrl: 'views/done-tasks.html',
@@ -59,9 +65,13 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
             templateUrl: 'views/delete.html',
             controller: 'DeleteSubCatCtrl'
         })
-} ]);
+}]);
 
-app.controller('MainCtrl', ['$rootScope', function ($rootScope) {
+app.controller('MainCtrl', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+
+    // Date Format: if seperator changed, don't forget to change that in regEx string in validateDate() function too.
+    $rootScope.dateFormat = 'yyyy-MM-dd';
+    $rootScope.timeFormat = 'HH:mm';
 
     $rootScope.categories = [
         {
@@ -128,32 +138,69 @@ app.controller('MainCtrl', ['$rootScope', function ($rootScope) {
 
     if (localStorage.categories) {
         $rootScope.categories = JSON.parse(localStorage.getItem("categories"));
-        console.log("Data Loaded!");
+        // console.log("Data Loaded!");
     }
 
+    $rootScope.importantTaskAvailable = false;
+
     $rootScope.refreshDoneTasks = function () {
+
         $rootScope.doneTasks = [];
 
-        angular.forEach($rootScope.categories, function (cat) {
+        var cat;
+        var subCat;
+        var task;
+        var taskIndex = -1;
+
+        for (var catIndex = 0; catIndex < $rootScope.categories.length; catIndex++) {
+            cat = $rootScope.categories[catIndex];
             if (cat.hasSubCat == true) {
-                angular.forEach(cat.subCategories, function (subCat) {
-                    angular.forEach(subCat.tasks, function (task) {
-                        if(task.done) {
+                for (var subCatIndex = 0; subCatIndex < cat.subCategories.length; subCatIndex++) {
+                    subCat = cat.subCategories[subCatIndex];
+                    for (taskIndex = 0; taskIndex < subCat.tasks.length; taskIndex++) {
+                        task = subCat.tasks[taskIndex];
+                        if (task.done == true) {
+                            task.catIndex = catIndex;
+                            task.subCatIndex = subCatIndex;
+                            task.taskIndex = taskIndex;
                             $rootScope.doneTasks.push(task);
                         }
-                    });
-                });
-            }
-            if (cat.hasSubCat == false) {
-                angular.forEach(cat.tasks, function (directTask) {
-                    if(directTask.done) {
-                        $rootScope.doneTasks.push(directTask);
+                        if (task.important == true && $rootScope.importantTaskAvailable == false) {
+                            $rootScope.importantTaskAvailable = true;
+                        }
                     }
-                });
+                }
             }
-        });
+            else if (cat.hasSubCat == false) {
+                for (taskIndex = 0; taskIndex < cat.tasks.length; taskIndex++) {
+                    task = cat.tasks[taskIndex];
+                    if (task.done == true) {
+                        task.catIndex = catIndex;
+                        task.subCatIndex = -1;
+                        task.taskIndex = taskIndex;
+                        $rootScope.doneTasks.push(task);
+                    }
+                    if (task.important == true && $rootScope.importantTaskAvailable == false) {
+                        $rootScope.importantTaskAvailable = true;
+                    }
+                }
+            }
+        }
+        $rootScope.importantTaskAvailable = false;
     };
+
     $rootScope.refreshDoneTasks();
+
+    $rootScope.$watch('importantTaskAvailable', function () {
+        $rootScope.showImportantAlert = true;
+        $timeout(function () {
+            $rootScope.fadeOut = true;
+        }, 5000);
+        $timeout(function () {
+            $rootScope.showImportantAlert = false;
+            $rootScope.fadeOut = false;
+        }, 6000);
+    });
 
     $rootScope.$watch('categories', function () {
         localStorage.setItem("categories", JSON.stringify($rootScope.categories));

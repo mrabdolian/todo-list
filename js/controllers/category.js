@@ -7,6 +7,9 @@ app.controller('CategoryCtrl', ['$rootScope', '$scope', '$location', function ($
     $scope.sortableOptions = {
         'ui-floating': true,
         stop: function (e, ui) {
+
+            $rootScope.refreshDoneTasks();
+
             // this callback has the changed model
             var logEntry = $rootScope.categories.map(function(i){
                 return $rootScope.categories.indexOf(i);

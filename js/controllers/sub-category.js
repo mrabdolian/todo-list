@@ -13,7 +13,10 @@ app.controller('SubCategoryCtrl', ['$rootScope', '$scope', '$stateParams', '$sta
         };
 
         $scope.sortableOptions = {
-            'ui-floating': true
+            'ui-floating': true,
+            stop: function (e, ui) {
+                $rootScope.refreshDoneTasks();
+            }
         };
 
         // the function to redirect to tasks-list (when there is no subCategories)

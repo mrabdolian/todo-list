@@ -23,12 +23,18 @@
     <script src="js/controllers/category.js"></script>
     <script src="js/controllers/sub-category.js"></script>
     <script src="js/controllers/task-list.js"></script>
+    <script src="js/controllers/details.js"></script>
     <script src="js/controllers/done-tasks.js"></script>
     <script src="js/controllers/delete-category.js"></script>
     <script src="js/controllers/delete-sub-category.js"></script>
 </head>
 <body ng-app="todoListApp" ng-controller="MainCtrl">
 <div class="container-fluid">
+    <div class="text-center">
+        <div class="alert alert-warning notification" ng-show="showImportantAlert" ng-class="{'fade-out': fadeOut}">
+            <strong>You have Important tasks!</strong> Please consider scheduling for them!
+        </div>
+    </div>
     <div ui-view></div>
 </div>
 <div class="main-footer text-center">
